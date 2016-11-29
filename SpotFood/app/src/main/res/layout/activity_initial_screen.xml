@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.poili.spotfood.MainActivity"
+    tools:context="spotfood.spotfood.InitialScreen"
     android:orientation="vertical"
     android:background="#000000">
 
@@ -67,7 +67,7 @@
                 android:gravity="left|center"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
-                android:hint="@string/searchText"
+                android:hint="Search"
                 android:textColorHint="#9293b4"
                 android:textColor="#000000"
                 android:inputType="textAutoComplete|textCapSentences"
