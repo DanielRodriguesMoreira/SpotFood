@@ -1,6 +1,13 @@
-﻿package spotfood.spotfood;
+package spotfood.spotfood;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +42,13 @@ public class InitialScreen extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);      //Teste para tirar a barra do titulo
         setContentView(R.layout.activity_initial_screen);
+
+        if(!hasNetworkConnection()){
+            MyDialog md = new MyDialog();
+            md.show(getFragmentManager(),"Hugo");
+        }
+
+
 
         SpotFood = FirebaseDatabase.getInstance().getReference();
 
@@ -227,5 +241,32 @@ public class InitialScreen extends Activity {
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
+    }
+
+    private boolean hasNetworkConnection(){
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+    }
+
+    class MyDialog extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder .setTitle("Titulo da Janela")
+                    .setMessage("Arq. Móveis")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setPositiveButton("0-2", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancelar",null);
+            return builder.create();
+            //return super.onCreateDialog(savedInstanceState);
+        }
     }
 }
