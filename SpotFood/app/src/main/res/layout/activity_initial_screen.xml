@@ -109,7 +109,7 @@
             android:layout_height="65dp"
             android:scaleX="1.35"
             android:scaleY="1.35"
-            android:src="@mipmap/button_plus_blue"
+            android:src="@mipmap/add_button"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
