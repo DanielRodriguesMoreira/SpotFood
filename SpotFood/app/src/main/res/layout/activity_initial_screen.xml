@@ -40,8 +40,7 @@
                 android:textColor="#FFFFFF"
                 android:textStyle="normal|bold"
                 android:textSize="25dp"
-                android:textAllCaps="false"
-                android:onClick="clickLogin"/>
+                android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -86,8 +85,7 @@
                 android:src="@mipmap/search_button"
                 android:layout_marginTop="26dp"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/blue_button"
-                android:onClick="clickSearch">
+                android:background="@drawable/blue_button">
             </ImageButton>
         </LinearLayout>
     </LinearLayout>
