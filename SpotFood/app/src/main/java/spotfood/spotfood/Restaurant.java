@@ -141,4 +141,25 @@ public class Restaurant {
     public void setTypeOfFood(List<String> typeOfFood) {
         this.typeOfFood = typeOfFood;
     }
+
+    public Hour getRestaurantHour(int day){
+        switch(day) {
+            case 1:
+                return sundayHour;
+            case 2:
+                return mondayHour;
+            case 3:
+                return tuesdayHour;
+            case 4:
+                return wednesdayHour;
+            case 5:
+                return thursdayHour;
+            case 6:
+                return fridayHour;
+            case 7:
+                return saturdayHour;
+            default:
+                return null;
+        }
+    }
 }

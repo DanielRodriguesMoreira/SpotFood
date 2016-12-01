@@ -2,6 +2,7 @@ package spotfood.spotfood;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -17,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class InitialScreen extends Activity {
@@ -42,41 +45,47 @@ public class InitialScreen extends Activity {
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchRestaurant(null);
+                hourSearch();
                 adapter.notifyDataSetChanged();
             }
         });
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, restaurant);
         this.liTeste.setAdapter(adapter);
 
-
-
-        /* HUGO
-        Button botao = (Button) findViewById(R.id.button2);
-        botao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createRestaurant(new Restaurant("1", "0", "Mc Donals", new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),
-                    new Hour(new Date(), new Date()),   "231568123", "Rua principal", new ArrayList<String>()));
-
-
-                createRestaurant(new Restaurant("2", "0", "Mc Donals 2.0", new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),
-                        new Hour(new Date(), new Date()),   "231568123", "Rua principal", new ArrayList<String>()));
-            }
-        });*/
     }
     private void createRestaurant(Restaurant r) {
         SpotFood.child("restaurants").child(r.getIdRestaurant()).setValue(r);
+    }
+
+
+
+    private void hourSearch(){
+        DatabaseReference userRef = this.SpotFood.child("restaurants");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            Calendar c = Calendar.getInstance();
+            int currentTime = c.get(Calendar.HOUR_OF_DAY)*100+c.get(Calendar.MINUTE);
+            int day = c.get(Calendar.DAY_OF_WEEK);
+            int restaurantOpen, restaurantClose;
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Restaurant u = postSnapshot.getValue(Restaurant.class);
+                    restaurantOpen = u.getRestaurantHour(day).getOpen();
+                    restaurantClose = u.getRestaurantHour(day).getClose();
+                    System.out.println("Restaurant:"+u.getName()+" open:"+restaurantOpen+" close:"+restaurantClose + " current:"+currentTime);
+                    if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen() && currentTime < u.getRestaurantHour(day).getClose()))
+                        restaurant.add(u.getName());
+                    else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen() || currentTime < u.getRestaurantHour(day).getClose()))
+                        restaurant.add(u.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void searchRestaurant(final String s) {
