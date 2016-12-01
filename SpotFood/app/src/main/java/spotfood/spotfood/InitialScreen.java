@@ -48,11 +48,16 @@ public class InitialScreen extends Activity {
             @Override
             public void onClick(View view) {
 
+                //Toast.makeText(getApplicationContext(), searchText.getText(), Toast.LENGTH_SHORT).show();
 
-                searchRestaurantByNameOrTypeOfFood(searchText.getText().toString());
-                //adapter.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(), "LALAL", Toast.LENGTH_SHORT).show();
-
+                if (searchText.getText().toString() == null || searchText.getText().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Estou aqui", Toast.LENGTH_SHORT).show();
+                    searchRestaurant();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "estou acolá", Toast.LENGTH_SHORT).show();
+                    searchRestaurantByNameOrTypeOfFood(searchText.getText().toString());
+                }
                 /*
                 createRestaurant(new Restaurant("3", "0", "Casa dos bifes", new Hour(new Date(), new Date()),
                         new Hour(new Date(), new Date()),
@@ -142,15 +147,29 @@ public class InitialScreen extends Activity {
         SpotFood.child("restaurants").child(r.getIdRestaurant()).setValue(r);
     }
 
-    private void searchRestaurant(final String s) {
-        DatabaseReference userRef = this.SpotFood.child("restaurants");
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void searchRestaurant() {
+
+        restaurant.clear();
+
+        //Get restaurants reference
+        final DatabaseReference restaurantsRef = this.SpotFood.child("restaurants");
+
+        //add Listener
+        restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //For that go through all the restaurants in firebase database
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Restaurant u = postSnapshot.getValue(Restaurant.class);
-                    restaurant.add(u.getName());
+                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
+                    restaurant.add(rest.getName());
+                    searchText.setText(searchText.getText() + ", " + rest.getName());
                 }
+
+                adapter.notifyDataSetChanged();
+
+                Toast.makeText(getApplicationContext(), ("nº de restaurantes = " + restaurant.size()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -162,8 +181,11 @@ public class InitialScreen extends Activity {
 
     private void searchRestaurantByNameOrTypeOfFood(final String nameOrTypeOfFood) {
 
+        Toast.makeText(getApplicationContext(), nameOrTypeOfFood, Toast.LENGTH_SHORT).show();
+
         //Check if string is null or empty
-        if (nameOrTypeOfFood == null && nameOrTypeOfFood.isEmpty()) {
+        if (nameOrTypeOfFood == null || nameOrTypeOfFood.isEmpty()) {
+            searchRestaurant();
             return;
         }
 
@@ -174,7 +196,6 @@ public class InitialScreen extends Activity {
 
         //add Listener
         restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
