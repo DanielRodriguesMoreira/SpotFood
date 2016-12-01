@@ -16,13 +16,15 @@ public class Restaurant {
     private String contacts;
     private String location;
     private List<String> typeOfFood;
+    //TODO: menu and offers need implementation
 
-    //Falta imagens do menu e offers
     public Restaurant() {
 
     }
 
-    public Restaurant(String idRestaurant, String idUser, String name, Hour mondayHour, Hour tuesdayHour, Hour wednesdayHour, Hour thursdayHour, Hour fridayHour, Hour saturdayHour, Hour sundayHour, String contacts, String location, List<String> typeOfFood) {
+    public Restaurant(String idRestaurant, String idUser, String name, Hour mondayHour, Hour tuesdayHour,
+                      Hour wednesdayHour, Hour thursdayHour, Hour fridayHour, Hour saturdayHour,
+                      Hour sundayHour, String contacts, String location, List<String> typeOfFood) {
         this.idRestaurant = idRestaurant;
         this.idUser = idUser;
         this.name = name;
@@ -54,9 +56,7 @@ public class Restaurant {
         this.idRestaurant = idRestaurant;
     }
 
-    public String getIdUser() {
-        return idUser;
-    }
+    public String getIdUser() { return idUser; }
 
     public void setIdUser(String idUser) {
         this.idUser = idUser;

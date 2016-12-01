@@ -20,9 +20,11 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,11 +58,9 @@ public class InitialScreen extends Activity {
             md.show(getFragmentManager(),"TAG");
         }
 
-        //Get database reference
-        mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
-
         //inicialize variables
         this.inicializeVariables();
+
 
         //show open restaurants
         this.searchOpenRestaurants();
@@ -68,6 +68,8 @@ public class InitialScreen extends Activity {
 
     /** Inicialize all the variables */
     private void inicializeVariables() {
+        //Get database reference
+        mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
         this.mRestaurantsList = new ArrayList<>();
         this.mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         this.mListRestaurants = (ListView) findViewById(R.id.listRestaurants);
@@ -112,13 +114,13 @@ public class InitialScreen extends Activity {
 
                     //in case open hours are lower than close hours and the current time is in that range
                     if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            && currentTime < u.getRestaurantHour(day).getClose())) {
+                            && currentTime <= u.getRestaurantHour(day).getClose())) {
                         mRestaurantsList.add(u.getName());
                     }
                     /* in case open hours are higher than close hours and the current time is higher
                      than open hours and lower than close hours*/
                     else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            || currentTime < u.getRestaurantHour(day).getClose())) {
+                            || currentTime <= u.getRestaurantHour(day).getClose())) {
                         mRestaurantsList.add(u.getName());
                     }
                 }
@@ -231,7 +233,7 @@ public class InitialScreen extends Activity {
             builder .setTitle("ERROR")
                     .setMessage("No internet connection")
                     .setIcon(android.R.drawable.stat_notify_error)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             finish();
