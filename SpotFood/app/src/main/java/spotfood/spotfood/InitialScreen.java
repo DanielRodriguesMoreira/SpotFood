@@ -17,6 +17,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class InitialScreen extends Activity {
 
     private DatabaseReference mSpotFoodDataBaseReference;
     private ImageButton mSearchButton;
+    private Button mLoginButton;
     private TextView mSearchText;
     private ListView mListRestaurants;
     private ArrayAdapter<String> mAdapter;
@@ -49,7 +51,7 @@ public class InitialScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);      //Teste para tirar a barra do titulo
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_initial_screen);
 
         //check internet Connection
@@ -85,6 +87,14 @@ public class InitialScreen extends Activity {
                 }
             }
 
+        });
+        this.mLoginButton = (Button)findViewById(R.id.loginButton);
+        this.mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication(), LoginScreen.class);
+                startActivity(intent);
+            }
         });
 
         //Set mAdapter to one row of list view

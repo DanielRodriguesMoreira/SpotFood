@@ -107,8 +107,7 @@
             android:layout_gravity="right"
             android:layout_marginEnd="60dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/blue_button"
-            android:onClick="clickOk"/>
+            android:background="@drawable/blue_button" />
         <Button
             android:id="@+id/newAccount"
             android:layout_width="wrap_content"

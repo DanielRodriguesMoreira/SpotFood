@@ -1,3 +1,14 @@
+/*
+ * SpotFood - 2016
+ *
+ * Authors:
+ *          -> Daniel Moreira nº21240321
+ *          -> Hugo Santos nº21220702
+ *          -> Tiago Santos nº21230530
+ *          -> Carlos Zambrano nº 21260582
+ *          -> Selman Ay nº21260599
+ */
+
 package spotfood.spotfood;
 
 import java.util.List;
