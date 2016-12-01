@@ -18,7 +18,9 @@ public class Restaurant {
     private List<String> typeOfFood;
 
     //Falta imagens do menu e offers
+    public Restaurant() {
 
+    }
 
     public Restaurant(String idRestaurant, String idUser, String name, Hour mondayHour, Hour tuesdayHour, Hour wednesdayHour, Hour thursdayHour, Hour fridayHour, Hour saturdayHour, Hour sundayHour, String contacts, String location, List<String> typeOfFood) {
         this.idRestaurant = idRestaurant;

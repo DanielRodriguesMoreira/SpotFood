@@ -2,13 +2,14 @@ package spotfood.spotfood;
 
 import java.util.Date;
 
-/**
- * Created by hugosantos on 29/11/16.
- */
 
 public class Hour {
     private Date open;
     private Date close;
+
+    public Hour() {
+
+    }
 
     public Hour(Date open, Date close) {
         this.open = open;
