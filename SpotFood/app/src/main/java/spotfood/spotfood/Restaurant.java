@@ -2,7 +2,8 @@ package spotfood.spotfood;
 
 import java.util.List;
 
-public class Restaurant {
+public class Restaurant
+{
     private String idRestaurant;
     private String idUser;
     private String name;
@@ -54,9 +55,7 @@ public class Restaurant {
         this.idRestaurant = idRestaurant;
     }
 
-    public String getIdUser() {
-        return idUser;
-    }
+    public String getIdUser() { return idUser; }
 
     public void setIdUser(String idUser) {
         this.idUser = idUser;

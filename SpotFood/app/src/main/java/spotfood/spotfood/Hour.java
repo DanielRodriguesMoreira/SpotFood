@@ -6,20 +6,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class Hour {
+public class Hour
+{
     private Date open;
     private Date close;
 
     public Hour() {
 
     }
-
-/*    public Hour(String op, String clo) {
-            String [] strList = op.split(":");
-            this.open = Integer.parseInt(strList[0])*100 + Integer.parseInt(strList[1]);
-            strList = clo.split(":");
-            this.close = Integer.parseInt(strList[0])*100 + Integer.parseInt(strList[1]);
-    }*/
 
     public Hour(Date open, Date close) {
         this.open = open;
@@ -41,5 +35,4 @@ public class Hour {
     public void setOpen(Date open) {
         this.open = open;
     }
-
 }
