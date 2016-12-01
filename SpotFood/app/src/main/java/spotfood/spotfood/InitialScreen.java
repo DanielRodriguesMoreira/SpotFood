@@ -1,4 +1,4 @@
-package spotfood.spotfood;
+﻿package spotfood.spotfood;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -160,28 +160,23 @@ public class InitialScreen extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //For that go through all the restaurants in firebase database
+                //Cicle For that go through all the restaurants in firebase database
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
                     restaurant.add(rest.getName());
                     searchText.setText(searchText.getText() + ", " + rest.getName());
                 }
 
+                //refresh ListView
                 adapter.notifyDataSetChanged();
-
-                Toast.makeText(getApplicationContext(), ("nº de restaurantes = " + restaurant.size()), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
     private void searchRestaurantByNameOrTypeOfFood(final String nameOrTypeOfFood) {
-
-        Toast.makeText(getApplicationContext(), nameOrTypeOfFood, Toast.LENGTH_SHORT).show();
 
         //Check if string is null or empty
         if (nameOrTypeOfFood == null || nameOrTypeOfFood.isEmpty()) {
@@ -189,6 +184,7 @@ public class InitialScreen extends Activity {
             return;
         }
 
+        //clear ListView
         restaurant.clear();
 
         //Get restaurants reference
@@ -199,7 +195,7 @@ public class InitialScreen extends Activity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //For that go through all the restaurants in firebase database
+                //Cicle For that go through all the restaurants in firebase database
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
                     boolean find = false;
@@ -224,13 +220,12 @@ public class InitialScreen extends Activity {
                     }
                 }
 
+                //refresh ListView
                 adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
     }
 }
