@@ -9,12 +9,15 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.poili.spotfood.R;
 import com.google.firebase.database.DataSnapshot;
@@ -23,18 +26,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class InitialScreen extends Activity {
 
     private DatabaseReference SpotFood;
     ImageButton searchButton;
     TextView searchText;
-    ListView listRestaurants;
     ArrayAdapter<String> adapter;
+    ListView liTeste;
+    String [] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     public ArrayList<String> restaurant;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,15 +47,17 @@ public class InitialScreen extends Activity {
         setContentView(R.layout.activity_initial_screen);
 
         if(!hasNetworkConnection()){
-            internetConnectionErrorDialog md = new internetConnectionErrorDialog();
-            md.show(getFragmentManager(),"TAG");
+            MyDialog md = new MyDialog();
+            md.show(getFragmentManager(),"Hugo");
         }
+
+
 
         SpotFood = FirebaseDatabase.getInstance().getReference();
 
         restaurant = new ArrayList<>();
         this.searchButton = (ImageButton) findViewById(R.id.searchButton);
-        this.listRestaurants = (ListView) findViewById(R.id.listRestaurants);
+        this.liTeste = (ListView) findViewById(R.id.listRestaurants);
         this.searchText = (TextView) findViewById(R.id.searchText);
 
 
@@ -95,7 +102,7 @@ public class InitialScreen extends Activity {
 
         });
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, restaurant);
-        this.listRestaurants.setAdapter(adapter);
+        this.liTeste.setAdapter(adapter);
 
     }
     private void createRestaurant(Restaurant r) {
@@ -223,20 +230,22 @@ public class InitialScreen extends Activity {
 
     }
 
-    class internetConnectionErrorDialog extends DialogFragment {
+    class MyDialog extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder .setTitle("ERROR")
-                    .setMessage("No internet connection")
-                    .setIcon(android.R.drawable.stat_notify_error)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder .setTitle("Titulo da Janela")
+                    .setMessage("Arq. Móveis")
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setPositiveButton("0-2", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             finish();
                         }
-                    });
+                    })
+                    .setNegativeButton("Cancelar",null);
             return builder.create();
+            //return super.onCreateDialog(savedInstanceState);
         }
     }
 }
