@@ -91,10 +91,30 @@
             </ImageButton>
         </LinearLayout>
     </LinearLayout>
-    <ListView
-        android:id="@+id/listRestaurants"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
-    </ListView>
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+        <ListView
+            android:id="@+id/listRestaurants"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+        </ListView>
+        <ImageButton
+            android:id="@+id/addRestaurantButton"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:scaleX="1.35"
+            android:scaleY="1.35"
+            android:src="@mipmap/add_button"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_gravity="right"
+            android:onClick="clickAddRestaurant"
+            android:background="#FFFFFF">
+        </ImageButton>
+    </LinearLayout>
 </LinearLayout>
