@@ -27,7 +27,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name="spotfood.spotfood.LoginScreen" />
-        <activity android:name="spotfood.spotfood.LocationScreen"></activity>
+        <activity android:name="spotfood.spotfood.LocationScreen" />
+        <activity android:name="spotfood.spotfood.CreateAccountScreen"></activity>
     </application>
 
 </manifest>
