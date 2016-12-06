@@ -17,12 +17,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.poili.spotfood.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class LoginScreen extends Activity {
 
+    private TextView mUsernameText;
+    private TextView mPasswordText;
+    private Button mLoginButton;
     private Button mCreateAccountButton;
+    private Map<String, String> mMapLogin;
+    private DatabaseReference mSpotFoodDataBaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +47,32 @@ public class LoginScreen extends Activity {
         setContentView(R.layout.login);
 
         this.inicializeVariables();
+
+        getLoginList();
     }
 
     private void inicializeVariables() {
+        this.mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
+        this.mMapLogin = new HashMap<>();
+        this.mUsernameText = (TextView)findViewById(R.id.loginUsername);
+        this.mPasswordText = (TextView)findViewById(R.id.loginPassword);
+        this.mLoginButton = (Button)findViewById(R.id.loginOk);
+        this.mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                String username = mUsernameText.getText().toString();
+                String password = mPasswordText.getText().toString();
+
+                if(!usernameAndPasswordAreCorrect(username, password)){
+                    Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Login ok!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         this.mCreateAccountButton = (Button)findViewById(R.id.newAccount);
         this.mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +80,48 @@ public class LoginScreen extends Activity {
                 Intent intent = new Intent(getApplication(), CreateAccountScreen.class);
                 startActivity(intent);
             }
+        });
+    }
+
+    private boolean usernameAndPasswordAreCorrect(String username, String password) {
+        if(username == null || username.length() == 0
+                || password == null || password.length() == 0){
+            return false;
+        }
+        else{
+            for (Map.Entry<String, String> entry : mMapLogin.entrySet())
+            {
+                if(entry.getKey().equals(username) && entry.getValue().equals(password)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /** Get all the usernames and passwords on firebase database */
+    private void getLoginList() {
+
+        this.mMapLogin.clear();
+
+        //Get restaurants reference
+        final DatabaseReference mUsersRef = mSpotFoodDataBaseReference.child("users");
+
+        //add listener
+        mUsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Cicle For that go through all the users in firebase database
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    String username = postSnapshot.child("username").getValue(String.class);
+                    String password = postSnapshot.child("password").getValue(String.class);
+                    mMapLogin.put(username, password);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
         });
     }
 }

@@ -44,7 +44,7 @@
                 android:textStyle="normal|bold"
                 android:textSize="25dp"/>
             <EditText
-                android:id="@+id/userText"
+                android:id="@+id/loginUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="24dp"
@@ -80,7 +80,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/passText"
+                android:id="@+id/loginPassword"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rounded_search"

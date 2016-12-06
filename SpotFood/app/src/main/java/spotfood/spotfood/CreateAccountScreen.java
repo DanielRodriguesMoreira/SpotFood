@@ -12,6 +12,7 @@
 package spotfood.spotfood;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -171,6 +172,9 @@ public class CreateAccountScreen extends Activity {
 
     /** Get all the usernames on firebase database */
     private void getUsernamesList() {
+
+        this.mUsernamesList.clear();
+
         //Get restaurants reference
         final DatabaseReference mRestaurantsRef = mSpotFoodDataBaseReference.child("users");
 
@@ -188,5 +192,12 @@ public class CreateAccountScreen extends Activity {
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplication(), InitialScreen.class);
+        startActivity(intent);
+        finish();
     }
 }
