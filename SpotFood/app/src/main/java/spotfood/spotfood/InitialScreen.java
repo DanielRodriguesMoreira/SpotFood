@@ -48,6 +48,7 @@ public class InitialScreen extends Activity {
     private ArrayAdapter<String> mAdapter;
     private ArrayList<String> mRestaurantsList;
     private ImageButton mAddRestaurantButton;
+    private TextView mEmptyText;
     private boolean mStateLogin; //Used to check if it's login(true) or logout(false)
     private static final boolean LOGIN = true;
     private static final boolean LOGOUT = false;
@@ -66,7 +67,7 @@ public class InitialScreen extends Activity {
 
         //inicialize variables
         this.inicializeVariables();
-
+                                                        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
         //show open restaurants
         this.searchOpenRestaurants();
     }
@@ -79,6 +80,7 @@ public class InitialScreen extends Activity {
         this.mRestaurantsList = new ArrayList<>();
         this.mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         this.mListRestaurants = (ListView) findViewById(R.id.listRestaurants);
+        this.mEmptyText = (TextView)findViewById(android.R.id.empty);
         this.mSearchText = (TextView) findViewById(R.id.searchText);
         this.mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +151,13 @@ public class InitialScreen extends Activity {
                     }
                 }
 
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants open at this time!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -177,8 +185,13 @@ public class InitialScreen extends Activity {
                     mRestaurantsList.add(rest.getName());
                 }
 
-                //refresh ListView
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants on Firebase Database!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -231,8 +244,14 @@ public class InitialScreen extends Activity {
                     }
                 }
 
-                //refresh ListView
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants with that name" +
+                            " or that serve that type of food!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

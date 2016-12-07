@@ -113,5 +113,12 @@
             android:layout_height="match_parent"
             android:background="#FFFFFF">
         </ListView>
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="There are no restaurants open at this time"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.poili.spotfood">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,7 +30,8 @@
 
         <activity android:name="spotfood.spotfood.LoginScreen" />
         <activity android:name="spotfood.spotfood.LocationScreen" />
-        <activity android:name="spotfood.spotfood.CreateAccountScreen"></activity>
+        <activity android:name="spotfood.spotfood.CreateAccountScreen" />
+        <activity android:name="spotfood.spotfood.MenuScreen"></activity>
     </application>
 
 </manifest>
