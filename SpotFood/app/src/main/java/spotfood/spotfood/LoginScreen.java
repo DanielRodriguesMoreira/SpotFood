@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,10 @@ public class LoginScreen extends Activity {
     private TextView mPasswordText;
     private Button mLoginButton;
     private Button mCreateAccountButton;
-    private Map<String, String> mMapLogin;
+    private Map<String, String[]> mMapLogin;
     private DatabaseReference mSpotFoodDataBaseReference;
+    private String mUserRole;
+    private static final String ADMIN = "ADMIN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,13 @@ public class LoginScreen extends Activity {
                     Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Login ok!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), ("Login ok! Role = " + mUserRole), Toast.LENGTH_LONG).show();
+                    if(mUserRole.toUpperCase().equals(ADMIN)){
+                        Intent intent = new Intent(getApplicationContext(), InitialScreen.class);
+                        intent.putExtra(ADMIN, true);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });
@@ -79,6 +88,7 @@ public class LoginScreen extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), CreateAccountScreen.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -89,9 +99,10 @@ public class LoginScreen extends Activity {
             return false;
         }
         else{
-            for (Map.Entry<String, String> entry : mMapLogin.entrySet())
+            for (Map.Entry<String, String[]> entry : mMapLogin.entrySet())
             {
-                if(entry.getKey().equals(username) && entry.getValue().equals(password)){
+                if(entry.getKey().equals(username) && entry.getValue()[0].equals(password)){
+                    this.mUserRole = entry.getValue()[1];
                     return true;
                 }
             }
@@ -116,12 +127,23 @@ public class LoginScreen extends Activity {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     String username = postSnapshot.child("username").getValue(String.class);
                     String password = postSnapshot.child("password").getValue(String.class);
-                    mMapLogin.put(username, password);
+                    String role     = postSnapshot.child("role").getValue(String.class);
+                    String[] array = new String[2];
+                    array[0] = password;
+                    array[1] = role;
+                    mMapLogin.put(username, array);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplication(), InitialScreen.class);
+        startActivity(intent);
+        finish();
     }
 }
