@@ -32,6 +32,7 @@
         <activity android:name="spotfood.spotfood.LocationScreen" />
         <activity android:name="spotfood.spotfood.CreateAccountScreen" />
         <activity android:name="spotfood.spotfood.MenuScreen"></activity>
+        <activity android:name="spotfood.spotfood.Details" />
     </application>
 
 </manifest>
