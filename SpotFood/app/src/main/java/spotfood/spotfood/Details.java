@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
@@ -16,8 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -71,10 +70,13 @@ public class Details extends Activity implements Constants{
     private ImageButton mDeleteOffersButton;
     private ImageButton mAddMenuButton;
     private String mUserID;
+    private boolean mIsANewRestaurant;
+    private String mRestaurantID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.details);
 
         this.inicializeVariables();
@@ -85,6 +87,7 @@ public class Details extends Activity implements Constants{
     private void inicializeVariables() {
 
         mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
+        this.mIsANewRestaurant = false;
         this.mRestaurantName = (TextView)findViewById(R.id.nameRestaurant);
         this.mContactsText = (TextView)findViewById(R.id.editTextContacts);
         this.mTypeOfFoodText = (TextView)findViewById(R.id.typeOfFood);
@@ -102,6 +105,11 @@ public class Details extends Activity implements Constants{
         this.mSaveOffersButton = (ImageButton)findViewById(R.id.saveButtonOffers);
         this.mDeleteOffersButton = (ImageButton)findViewById(R.id.deleteButtonOffers);
         this.mAddMenuButton = (ImageButton)findViewById(R.id.addButtonMenu);
+        this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mSaveConctactsButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mSaveLocationButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mSaveMenuButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mSaveOffersButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,7 +300,10 @@ public class Details extends Activity implements Constants{
             this.fillDetails(intent);
         }
         else{
-            this.mUserID = intent.getStringExtra(USERID);
+            this.mUserID = intent.getStringExtra(USER_ID);
+            this.mRestaurantID = intent.getStringExtra(RESTAURANT_ID);
+            this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
+            this.fillDetails(intent);
         }
     }
 
@@ -360,31 +371,46 @@ public class Details extends Activity implements Constants{
         this.mMinutesSaturdayOpen.setValue(intent.getIntExtra(SATURDAY_OPEN_MINUTES, 0));
         this.mHoursSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_HOURS, 0));
         this.mMinutesSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_MINUTES, 0));
+        this.mHoursMondayClose.setValue(intent.getIntExtra(MONDAY_CLOSE_HOURS, 0));
+        this.mMinutesMondayClose.setValue(intent.getIntExtra(MONDAY_CLOSE_MINUTES, 0));
+        this.mHoursTuesdayClose.setValue(intent.getIntExtra(TUESDAY_CLOSE_HOURS, 0));
+        this.mMinutesTuesdayClose.setValue(intent.getIntExtra(TUESDAY_CLOSE_MINUTES, 0));
+        this.mHoursWednesdayClose.setValue(intent.getIntExtra(WEDNESDAY_CLOSE_HOURS, 0));
+        this.mMinutesWednesdayClose.setValue(intent.getIntExtra(WEDNESDAY_CLOSE_MINUTES, 0));
+        this.mHoursThursdayClose.setValue(intent.getIntExtra(THURSDAY_CLOSE_HOURS, 0));
+        this.mMinutesThursdayClose.setValue(intent.getIntExtra(THURSDAY_CLOSE_MINUTES, 0));
+        this.mHoursFridayClose.setValue(intent.getIntExtra(FRIDAY_CLOSE_HOURS, 0));
+        this.mMinutesFridayClose.setValue(intent.getIntExtra(FRIDAY_CLOSE_MINUTES, 0));
+        this.mHoursSaturdayClose.setValue(intent.getIntExtra(SATURDAY_CLOSE_HOURS, 0));
+        this.mMinutesSaturdayClose.setValue(intent.getIntExtra(SATURDAY_CLOSE_MINUTES, 0));
+        this.mHoursSundayClose.setValue(intent.getIntExtra(SUNDAY_CLOSE_HOURS, 0));
+        this.mMinutesSundayClose.setValue(intent.getIntExtra(SUNDAY_CLOSE_MINUTES, 0));
         this.mLocationText.setText(intent.getStringExtra(LOCATION));
         this.mContactsText.setText(intent.getStringExtra(CONTACTS));
         this.mTypeOfFoodText.setText(intent.getStringExtra(TYPE_OF_FOOD));
     }
 
     class saveRestaurantDetailsListener implements View.OnClickListener {
-
-        private List<String> typeOfFoodList = new ArrayList<>();
-        private StringTokenizer token = new StringTokenizer(mTypeOfFoodText.getText().toString(), ", ", false);
-
-        private void fillTypeOfFoodList(){
-            while(this.token.hasMoreTokens()){
-                typeOfFoodList.add(token.nextToken());
-            }
-        }
-
         @Override
         public void onClick(View view) {
 
-            fillTypeOfFoodList();
+            List<String> typeOfFoodList = new ArrayList<String>();
+            StringTokenizer tokenizer = new StringTokenizer(mTypeOfFoodText.getText().toString(), ",; ", false);
+            String restaurantID;
+            while(tokenizer.hasMoreTokens()){
+                String token = tokenizer.nextToken();
+                typeOfFoodList.add(token);
+            }
 
-            Toast.makeText(getApplicationContext(), mRestaurantName.getText().toString(), Toast.LENGTH_SHORT).show();
+            if(mIsANewRestaurant){
+                restaurantID = UUID.randomUUID().toString();
+            }
+            else{
+                restaurantID = mRestaurantID;
+            }
 
             Restaurant r = new Restaurant(
-                    UUID.randomUUID().toString(),
+                    restaurantID,
                     mUserID,
                     mRestaurantName.getText().toString(),
                     new Hour(mHoursMondayOpen.getValue(), mMinutesMondayOpen.getValue(),
@@ -403,8 +429,9 @@ public class Details extends Activity implements Constants{
                             mHoursSundayClose.getValue(), mMinutesSundayClose.getValue()),
                     mContactsText.getText().toString(),
                     mLocationText.getText().toString(),
-                    this.typeOfFoodList
+                    typeOfFoodList
             );
+
             mSpotFoodDataBaseReference.child("restaurants").child(r.getIdRestaurant()).setValue(r);
         }
     }

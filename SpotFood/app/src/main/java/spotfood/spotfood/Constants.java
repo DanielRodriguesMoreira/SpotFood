@@ -38,6 +38,7 @@ public interface Constants {
     public static final String LOCATION = "LOCATION";
     public static final String CONTACTS = "CONTACTS";
     public static final String TYPE_OF_FOOD = "TYPE_OF_FOOD";
-    public static final String USERID = "USERID";
-
+    public static final String USER_ID = "USER_ID";
+    public static final String NEWRESTAURANT = "NEWRESTAURANT";
+    public static final String RESTAURANT_ID = "RESTAURANT_ID";
 }

@@ -29,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class CreateAccountScreen extends Activity implements Constants{
@@ -46,6 +48,7 @@ public class CreateAccountScreen extends Activity implements Constants{
     private static String mUsernameInvalidError = "Username can't contain: % & / ^";
     private static String mPasswordInvalidError = "Password can't contain: % & / ^";
     private static String mRoleRM = "RM";
+    private String mUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,13 +115,21 @@ public class CreateAccountScreen extends Activity implements Constants{
 
     /** Create Account on firebase database */
     private void createAccount(String username, String password, String restaurant) {
-        User user = new User(UUID.randomUUID().toString(), username, password, mRoleRM);
+        mUserID = UUID.randomUUID().toString();
+        User user = new User(mUserID, username, password, mRoleRM);
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);
 
-        Intent intent = new Intent(getApplication(), Details.class);
-        intent.putExtra(USERID, user.getIdUser());
-        startActivity(intent);
-        finish();
+        if(restaurant.equals("New Restaurant")) {
+            Intent intent = new Intent(getApplication(), Details.class);
+            intent.putExtra(USER_ID, mUserID);
+            intent.putExtra(NEWRESTAURANT, true);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            searchRestaurantByName(restaurant);
+        }
+
     }
 
     /** Check if a string is null or shorten than 5 characters*/
@@ -164,16 +175,19 @@ public class CreateAccountScreen extends Activity implements Constants{
         mRestaurantsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<String> mRestaurantsNamesList = new ArrayList<String>();
+                final ArrayList<String> mRestaurantsNamesList = new ArrayList<String>();
+
                 mRestaurantsNamesList.add("New Restaurant");
 
                 //Cicle For that go through all the restaurants in firebase database
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     String idUser = postSnapshot.child("idUser").getValue(String.class);
                     // if idUser equals 0, it means that it is not associated with a user
-                    if(idUser.equals("0")){
-                        String restaurantName = postSnapshot.child("name").getValue(String.class);
-                        mRestaurantsNamesList.add(restaurantName);
+                    if(idUser != null) {
+                        if (idUser.equals("0")) {
+                            String restaurantName = postSnapshot.child("name").getValue(String.class);
+                            mRestaurantsNamesList.add(restaurantName);
+                        }
                     }
                 }
 
@@ -213,6 +227,129 @@ public class CreateAccountScreen extends Activity implements Constants{
             public void onCancelled(DatabaseError databaseError) { }
         });
     }
+
+    private void searchRestaurantByName(final String restaurantName) {
+
+        //Check if string is null or empty
+        if (restaurantName == null || restaurantName.isEmpty()) {
+            return;
+        }
+
+        //Get restaurants reference
+        final DatabaseReference restaurantsRef = this.mSpotFoodDataBaseReference.child("restaurants");
+
+        //add Listener
+        restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //Cicle For that go through all the restaurants in firebase database
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
+
+                    if(rest.getName().equals(restaurantName)){
+                        fillRestaurantInformationAndCallIntent(rest);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
+        if(restaurant == null ){
+            return;
+        }
+
+        String restaurantName = restaurant.getName();
+        String restaurantID = restaurant.getIdRestaurant();
+        String location = restaurant.getLocation();
+        String contacts = restaurant.getContacts();
+        List<String> typeOfFoodList = restaurant.getTypeOfFood();
+        String typeOfFood = "";
+        if(typeOfFoodList != null) {
+            for (int i = 0; i < typeOfFoodList.size(); i++) {
+                if (i == typeOfFoodList.size() - 1) {
+                    typeOfFood += typeOfFoodList.get(i);
+                } else {
+                    typeOfFood += typeOfFoodList.get(i) + ", ";
+                }
+            }
+        }
+        int mondayOpenHours = restaurant.getMondayHour().getOpenHour();
+        int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
+        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHour();
+        int tuesdayOpenMinutes = restaurant.getTuesdayHour().getOpenMinutes();
+        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHour();
+        int wednesdayOpenMinutes = restaurant.getWednesdayHour().getOpenMinutes();
+        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHour();
+        int thursdayOpenMinutes = restaurant.getThursdayHour().getOpenMinutes();
+        int fridayOpenHours = restaurant.getFridayHour().getOpenHour();
+        int fridayOpenMinutes = restaurant.getFridayHour().getOpenMinutes();
+        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHour();
+        int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
+        int sundayOpenHours = restaurant.getSundayHour().getOpenHour();
+        int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
+        int mondayCloseHours = restaurant.getMondayHour().getCloseHour();
+        int mondayCloseMinutes = restaurant.getMondayHour().getCloseMinutes();
+        int tuesdayCloseHours = restaurant.getTuesdayHour().getCloseHour();
+        int tuesdayCloseMinutes = restaurant.getTuesdayHour().getCloseMinutes();
+        int wednesdayCloseHours = restaurant.getWednesdayHour().getCloseHour();
+        int wednesdayCloseMinutes = restaurant.getWednesdayHour().getCloseMinutes();
+        int thursdayCloseHours = restaurant.getThursdayHour().getCloseHour();
+        int thursdayCloseMinutes = restaurant.getThursdayHour().getCloseMinutes();
+        int fridayCloseHours = restaurant.getFridayHour().getCloseHour();
+        int fridayCloseMinutes = restaurant.getFridayHour().getCloseMinutes();
+        int saturdayCloseHours = restaurant.getSaturdayHour().getCloseHour();
+        int saturdayCloseMinutes = restaurant.getSaturdayHour().getCloseMinutes();
+        int sundayCloseHours = restaurant.getSundayHour().getCloseHour();
+        int sundayCloseMinutes = restaurant.getSundayHour().getCloseMinutes();
+
+        Intent intent = new Intent(getApplication(), Details.class);
+        intent.putExtra(USER_ID, mUserID);
+        intent.putExtra(RESTAURANT_NAME, restaurantName);
+        intent.putExtra(RESTAURANT_ID, restaurantID);
+        intent.putExtra(MONDAY_OPEN_HOURS, mondayOpenHours);
+        intent.putExtra(MONDAY_OPEN_MINUTES, mondayOpenMinutes);
+        intent.putExtra(TUESDAY_OPEN_HOURS, tuesdayOpenHours);
+        intent.putExtra(TUESDAY_OPEN_MINUTES, tuesdayOpenMinutes);
+        intent.putExtra(WEDNESDAY_OPEN_HOURS, wednesdayOpenHours);
+        intent.putExtra(WEDNESDAY_OPEN_MINUTES, wednesdayOpenMinutes);
+        intent.putExtra(THURSDAY_OPEN_HOURS, thursdayOpenHours);
+        intent.putExtra(THURSDAY_OPEN_MINUTES, thursdayOpenMinutes);
+        intent.putExtra(FRIDAY_OPEN_HOURS, fridayOpenHours);
+        intent.putExtra(FRIDAY_OPEN_MINUTES, fridayOpenMinutes);
+        intent.putExtra(SATURDAY_OPEN_HOURS, saturdayOpenHours);
+        intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
+        intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
+        intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
+        intent.putExtra(MONDAY_CLOSE_HOURS, mondayCloseHours);
+        intent.putExtra(MONDAY_CLOSE_MINUTES, mondayCloseMinutes);
+        intent.putExtra(TUESDAY_CLOSE_HOURS, tuesdayCloseHours);
+        intent.putExtra(TUESDAY_CLOSE_MINUTES, tuesdayCloseMinutes);
+        intent.putExtra(WEDNESDAY_CLOSE_HOURS, wednesdayCloseHours);
+        intent.putExtra(WEDNESDAY_CLOSE_MINUTES, wednesdayCloseMinutes);
+        intent.putExtra(THURSDAY_CLOSE_HOURS, thursdayCloseHours);
+        intent.putExtra(THURSDAY_CLOSE_MINUTES, thursdayCloseMinutes);
+        intent.putExtra(FRIDAY_CLOSE_HOURS, fridayCloseHours);
+        intent.putExtra(FRIDAY_CLOSE_MINUTES, fridayCloseMinutes);
+        intent.putExtra(SATURDAY_CLOSE_HOURS, saturdayCloseHours);
+        intent.putExtra(SATURDAY_CLOSE_MINUTES, saturdayCloseMinutes);
+        intent.putExtra(SUNDAY_CLOSE_HOURS, sundayCloseHours);
+        intent.putExtra(SUNDAY_CLOSE_MINUTES, sundayCloseMinutes);
+        intent.putExtra(LOCATION, location);
+        intent.putExtra(CONTACTS, contacts);
+        intent.putExtra(TYPE_OF_FOOD, typeOfFood);
+
+
+        startActivity(intent);
+        finish();
+    }
+
+
 
     @Override
     public void onBackPressed() {
