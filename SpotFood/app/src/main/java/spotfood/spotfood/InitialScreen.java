@@ -319,19 +319,19 @@ public class InitialScreen extends Activity implements Constants {
                 typeOfFood += typeOfFoodList.get(i) + ", ";
             }
         }
-        int mondayOpenHours = restaurant.getMondayHour().getOpenHours();
+        int mondayOpenHours = restaurant.getMondayHour().getOpenHour();
         int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
-        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHours();
+        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHour();
         int tuesdayOpenMinutes = restaurant.getTuesdayHour().getOpenMinutes();
-        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHours();
+        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHour();
         int wednesdayOpenMinutes = restaurant.getWednesdayHour().getOpenMinutes();
-        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHours();
+        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHour();
         int thursdayOpenMinutes = restaurant.getThursdayHour().getOpenMinutes();
-        int fridayOpenHours = restaurant.getFridayHour().getOpenHours();
+        int fridayOpenHours = restaurant.getFridayHour().getOpenHour();
         int fridayOpenMinutes = restaurant.getFridayHour().getOpenMinutes();
-        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHours();
+        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHour();
         int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
-        int sundayOpenHours = restaurant.getSundayHour().getOpenHours();
+        int sundayOpenHours = restaurant.getSundayHour().getOpenHour();
         int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
 
         Intent intent = new Intent(getApplication(), Details.class);
