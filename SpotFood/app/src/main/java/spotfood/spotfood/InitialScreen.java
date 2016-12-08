@@ -306,13 +306,36 @@ public class InitialScreen extends Activity implements Constants {
         String restaurantName = restaurant.getName();
         int mondayOpenHours = restaurant.getMondayHour().getOpenHours();
         int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
-
+        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHours();
+        int tuesdayOpenMinutes = restaurant.getTuesdayHour().getOpenMinutes();
+        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHours();
+        int wednesdayOpenMinutes = restaurant.getWednesdayHour().getOpenMinutes();
+        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHours();
+        int thursdayOpenMinutes = restaurant.getThursdayHour().getOpenMinutes();
+        int fridayOpenHours = restaurant.getFridayHour().getOpenHours();
+        int fridayOpenMinutes = restaurant.getFridayHour().getOpenMinutes();
+        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHours();
+        int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
+        int sundayOpenHours = restaurant.getSundayHour().getOpenHours();
+        int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
 
         Intent intent = new Intent(getApplication(), Details.class);
         intent.putExtra(ONLYTOSHOW, true);
         intent.putExtra(RESTAURANT_NAME, restaurantName);
         intent.putExtra(MONDAY_OPEN_HOURS, mondayOpenHours);
         intent.putExtra(MONDAY_OPEN_MINUTES, mondayOpenMinutes);
+        intent.putExtra(TUESDAY_OPEN_HOURS, tuesdayOpenHours);
+        intent.putExtra(TUESDAY_OPEN_MINUTES, tuesdayOpenMinutes);
+        intent.putExtra(WEDNESDAY_OPEN_HOURS, wednesdayOpenHours);
+        intent.putExtra(WEDNESDAY_OPEN_MINUTES, wednesdayOpenMinutes);
+        intent.putExtra(THURSDAY_OPEN_HOURS, thursdayOpenHours);
+        intent.putExtra(THURSDAY_OPEN_MINUTES, thursdayOpenMinutes);
+        intent.putExtra(FRIDAY_OPEN_HOURS, fridayOpenHours);
+        intent.putExtra(FRIDAY_OPEN_MINUTES, fridayOpenMinutes);
+        intent.putExtra(SATURDAY_OPEN_HOURS, saturdayOpenHours);
+        intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
+        intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
+        intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
 
         startActivity(intent);
         finish();
