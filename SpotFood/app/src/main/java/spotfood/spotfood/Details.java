@@ -264,5 +264,17 @@ public class Details extends Activity implements Constants{
         this.mRestaurantName.setText(intent.getStringExtra(RESTAURANT_NAME));
         this.mHoursMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_HOURS, 0));
         this.mMinutesMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_MINUTES, 0));
+        this.mHoursTuesdayOpen.setValue(intent.getIntExtra(TUESDAY_OPEN_HOURS, 0));
+        this.mMinutesTuesdayOpen.setValue(intent.getIntExtra(TUESDAY_OPEN_MINUTES, 0));
+        this.mHoursWednesdayOpen.setValue(intent.getIntExtra(WEDNESDAY_OPEN_HOURS, 0));
+        this.mMinutesWednesdayOpen.setValue(intent.getIntExtra(WEDNESDAY_OPEN_MINUTES, 0));
+        this.mHoursThursdayOpen.setValue(intent.getIntExtra(THURSDAY_OPEN_HOURS, 0));
+        this.mMinutesThursdayOpen.setValue(intent.getIntExtra(THURSDAY_OPEN_MINUTES, 0));
+        this.mHoursFridayOpen.setValue(intent.getIntExtra(FRIDAY_OPEN_HOURS, 0));
+        this.mMinutesFridayOpen.setValue(intent.getIntExtra(FRIDAY_OPEN_MINUTES, 0));
+        this.mHoursSaturdayOpen.setValue(intent.getIntExtra(SATURDAY_OPEN_HOURS, 0));
+        this.mMinutesSaturdayOpen.setValue(intent.getIntExtra(SATURDAY_OPEN_MINUTES, 0));
+        this.mHoursSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_HOURS, 0));
+        this.mMinutesSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_MINUTES, 0));
     }
 }
