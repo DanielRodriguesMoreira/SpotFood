@@ -97,10 +97,8 @@ public class CreateAccountScreen extends Activity {
         User user = new User(UUID.randomUUID().toString(), username, password, mRoleRM);
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);
 
-        //TODO: this is to remove
-        Toast.makeText(getApplicationContext(), "Utilizar criado com sucesso", Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(getApplication(), MenuScreen.class);
-        //startActivity(intent);
+        Intent intent = new Intent(getApplication(), Details.class);
+        startActivity(intent);
         finish();
     }
 
