@@ -25,7 +25,7 @@
             android:textSize="35dp"
             android:paddingStart="15dp"
             android:paddingTop="25dp"
-            android:textStyle="normal|bold" />
+            android:textStyle="normal|bold"/>
         <Button
             android:id="@+id/loginButton"
             android:layout_width="wrap_content"

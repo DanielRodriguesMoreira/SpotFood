@@ -62,14 +62,15 @@ public class InitialScreen extends Activity implements Constants {
         setContentView(R.layout.activity_initial_screen);
 
         //check internet Connection
-        if(!hasNetworkConnection()){
+        if (!hasNetworkConnection()) {
             internetConnectionErrorDialog md = new internetConnectionErrorDialog();
-            md.show(getFragmentManager(),"TAG");
+            md.show(getFragmentManager(), "TAG");
         }
 
         //inicialize variables
         this.inicializeVariables();
-                                                        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
+        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
+
         //show open restaurants
         //this.searchOpenRestaurants();
     }
@@ -145,18 +146,18 @@ public class InitialScreen extends Activity implements Constants {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Restaurant u = postSnapshot.getValue(Restaurant.class);
-                    restaurantOpen = u.getRestaurantHour(day).getOpen();
-                    restaurantClose = u.getRestaurantHour(day).getClose();
+                    restaurantOpen = u.getRestaurantHour(day).getOpenHour()*100 + u.getRestaurantHour(day).getOpenMinutes();
+                    restaurantClose = u.getRestaurantHour(day).getCloseHour()*100 + u.getRestaurantHour(day).getCloseMinutes();
 
                     //in case open hours are lower than close hours and the current time is in that range
-                    if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            && currentTime <= u.getRestaurantHour(day).getClose())) {
+                    if(restaurantOpen < restaurantClose && (currentTime >= restaurantOpen
+                            && currentTime <= restaurantClose)) {
                         mRestaurantsList.add(u.getName());
                     }
                     /* in case open hours are higher than close hours and the current time is higher
                      than open hours and lower than close hours*/
-                    else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            || currentTime <= u.getRestaurantHour(day).getClose())) {
+                    else if( restaurantOpen > restaurantClose && (currentTime >= restaurantOpen
+                            || currentTime <= restaurantClose)) {
                         mRestaurantsList.add(u.getName());
                     }
                 }

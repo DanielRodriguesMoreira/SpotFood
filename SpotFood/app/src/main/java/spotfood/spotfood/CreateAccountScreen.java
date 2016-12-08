@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +73,23 @@ public class CreateAccountScreen extends Activity implements Constants{
 
                 String username = mUsernameTextView.getText().toString();
                 String password = mPasswordTextView.getText().toString();
+
+                if(!isLengthCorrect(username) || haveInvalidCharacters(username) || checkIfUsernameAlreadyExists(username)) {
+                    ImageView result= (ImageView)findViewById(R.id.result_user_create_account_icon);
+                    result.setImageResource(R.mipmap.error_icon);
+                    result.setVisibility(ImageView.VISIBLE);
+                } else {
+                    ImageView result= (ImageView)findViewById(R.id.result_user_create_account_icon);
+                    result.setVisibility(ImageView.INVISIBLE);
+                }
+                if(!isLengthCorrect(password) || haveInvalidCharacters(password)) {
+                    ImageView result= (ImageView)findViewById(R.id.result_pass_create_account_icon);
+                    result.setImageResource(R.mipmap.error_icon);
+                    result.setVisibility(ImageView.VISIBLE);
+                } else {
+                    ImageView result= (ImageView)findViewById(R.id.result_pass_create_account_icon);
+                    result.setVisibility(ImageView.INVISIBLE);
+                }
 
                 if (!isLengthCorrect(username)) {
                     Toast.makeText(getApplicationContext(), mUsernameLengthError, Toast.LENGTH_LONG).show();
