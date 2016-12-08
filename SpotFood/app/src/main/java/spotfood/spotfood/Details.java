@@ -8,11 +8,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.poili.spotfood.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class Details extends Activity {
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.UUID;
 
+public class Details extends Activity implements Constants{
+
+    private DatabaseReference mSpotFoodDataBaseReference;
     private TabHost tabHost;
     private NumberPicker mHoursMondayOpen;
     private NumberPicker mMinutesMondayOpen;
@@ -32,7 +44,7 @@ public class Details extends Activity {
     private NumberPicker mMinutesThursdayClose;
     private NumberPicker mHoursFridayOpen;
     private NumberPicker mMinutesFridayOpen;
-    private NumberPicker mMoursFridayClose;
+    private NumberPicker mHoursFridayClose;
     private NumberPicker mMinutesFridayClose;
     private NumberPicker mHoursSaturdayOpen;
     private NumberPicker mMinutesSaturdayOpen;
@@ -43,6 +55,22 @@ public class Details extends Activity {
     private NumberPicker mHoursSundayClose;
     private NumberPicker mMinutesSundayClose;
     private Button mLogoutButton;
+    private TextView mRestaurantName;
+    private TextView mContactsText;
+    private TextView mLocationText;
+    private TextView mTypeOfFoodText;
+    private ImageButton mSaveHoursButton;
+    private ImageButton mDeleteHoursButton;
+    private ImageButton mSaveConctactsButton;
+    private ImageButton mDeleteContactsButton;
+    private ImageButton mSaveLocationButton;
+    private ImageButton mDeleteLocationButton;
+    private ImageButton mSaveMenuButton;
+    private ImageButton mDeleteMenuButton;
+    private ImageButton mSaveOffersButton;
+    private ImageButton mDeleteOffersButton;
+    private ImageButton mAddMenuButton;
+    private String mUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +78,30 @@ public class Details extends Activity {
         setContentView(R.layout.details);
 
         this.inicializeVariables();
+
+        this.checkIntentResult();
     }
 
     private void inicializeVariables() {
 
+        mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
+        this.mRestaurantName = (TextView)findViewById(R.id.nameRestaurant);
+        this.mContactsText = (TextView)findViewById(R.id.editTextContacts);
+        this.mTypeOfFoodText = (TextView)findViewById(R.id.typeOfFood);
+        this.mLocationText = (TextView)findViewById(R.id.locationText);
         this.mLogoutButton = (Button)findViewById(R.id.loginButton);
+        this.mSaveHoursButton = (ImageButton) findViewById(R.id.saveButtonHours);
+        this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mDeleteHoursButton = (ImageButton) findViewById(R.id.deleteButtonHours);
+        this.mSaveConctactsButton = (ImageButton)findViewById(R.id.saveButtonContacts);
+        this.mDeleteContactsButton = (ImageButton)findViewById(R.id.deleteButtonContacts);
+        this.mSaveLocationButton = (ImageButton)findViewById(R.id.saveButtonLocation);
+        this.mDeleteLocationButton = (ImageButton)findViewById(R.id.deleteButtonLocation);
+        this.mSaveMenuButton = (ImageButton)findViewById(R.id.saveButtonMenu);
+        this.mDeleteMenuButton = (ImageButton)findViewById(R.id.deleteButtonMenu);
+        this.mSaveOffersButton = (ImageButton)findViewById(R.id.saveButtonOffers);
+        this.mDeleteOffersButton = (ImageButton)findViewById(R.id.deleteButtonOffers);
+        this.mAddMenuButton = (ImageButton)findViewById(R.id.addButtonMenu);
         this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +165,7 @@ public class Details extends Activity {
 
         mHoursFridayOpen = (NumberPicker)findViewById(R.id.hoursFridayOpen);
         mMinutesFridayOpen = (NumberPicker)findViewById(R.id.minutesFridayOpen);
-        mMoursFridayClose = (NumberPicker)findViewById(R.id.hoursFridayClose);
+        mHoursFridayClose = (NumberPicker)findViewById(R.id.hoursFridayClose);
         mMinutesFridayClose = (NumberPicker)findViewById(R.id.minutesFridayClose);
 
         mHoursSaturdayOpen = (NumberPicker)findViewById(R.id.hoursSaturdayOpen);
@@ -189,9 +236,9 @@ public class Details extends Activity {
         mMinutesFridayOpen.setMinValue(0);
         mMinutesFridayOpen.setMaxValue(59);
         mMinutesFridayOpen.setFormatter(new MyTwoDigitFormatter());
-        mMoursFridayClose.setMinValue(0);
-        mMoursFridayClose.setMaxValue(23);
-        mMoursFridayClose.setFormatter(new MyTwoDigitFormatter());
+        mHoursFridayClose.setMinValue(0);
+        mHoursFridayClose.setMaxValue(23);
+        mHoursFridayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesFridayClose.setMinValue(0);
         mMinutesFridayClose.setMaxValue(59);
         mMinutesFridayClose.setFormatter(new MyTwoDigitFormatter());
@@ -223,7 +270,7 @@ public class Details extends Activity {
         mMinutesSundayClose.setFormatter(new MyTwoDigitFormatter());
     }
 
-    public class MyTwoDigitFormatter implements NumberPicker.Formatter {
+    class MyTwoDigitFormatter implements NumberPicker.Formatter {
         public String format(int value) {
             return String.format("%02d", value);
         }
@@ -234,5 +281,131 @@ public class Details extends Activity {
         Intent intent = new Intent(getApplication(), InitialScreen.class);
         startActivity(intent);
         finish();
+    }
+
+    /** Check if this class was called by an intent */
+    private void checkIntentResult() {
+        Intent intent = getIntent();
+        boolean onlyToShow = intent.getBooleanExtra(ONLYTOSHOW, false);
+        if(onlyToShow){
+            this.disableComponents();
+            this.fillDetails(intent);
+        }
+        else{
+            this.mUserID = intent.getStringExtra(USERID);
+        }
+    }
+
+    private void disableComponents() {
+        this.mLogoutButton.setVisibility(View.INVISIBLE);
+        this.mSaveHoursButton.setVisibility(View.INVISIBLE);
+        this.mDeleteHoursButton.setVisibility(View.INVISIBLE);
+        this.mSaveConctactsButton.setVisibility(View.INVISIBLE);
+        this.mDeleteContactsButton.setVisibility(View.INVISIBLE);
+        this.mSaveLocationButton.setVisibility(View.INVISIBLE);
+        this.mDeleteLocationButton.setVisibility(View.INVISIBLE);
+        this.mSaveMenuButton.setVisibility(View.INVISIBLE);
+        this.mDeleteMenuButton.setVisibility(View.INVISIBLE);
+        this.mSaveOffersButton.setVisibility(View.INVISIBLE);
+        this.mDeleteOffersButton.setVisibility(View.INVISIBLE);
+        this.mAddMenuButton.setVisibility(View.INVISIBLE);
+        this.mRestaurantName.setEnabled(false);
+        this.mHoursMondayOpen.setEnabled(false);
+        this.mMinutesMondayOpen.setEnabled(false);
+        this.mHoursMondayClose.setEnabled(false);
+        this.mMinutesMondayClose.setEnabled(false);
+        this.mHoursTuesdayOpen.setEnabled(false);
+        this.mMinutesTuesdayOpen.setEnabled(false);
+        this.mHoursTuesdayClose.setEnabled(false);
+        this.mMinutesTuesdayClose.setEnabled(false);
+        this.mHoursWednesdayOpen.setEnabled(false);
+        this.mMinutesWednesdayOpen.setEnabled(false);
+        this.mHoursWednesdayClose.setEnabled(false);
+        this.mMinutesWednesdayClose.setEnabled(false);
+        this.mHoursThursdayOpen.setEnabled(false);
+        this.mMinutesThursdayOpen.setEnabled(false);
+        this.mHoursThursdayClose.setEnabled(false);
+        this.mMinutesThursdayClose.setEnabled(false);
+        this.mHoursFridayOpen.setEnabled(false);
+        this.mMinutesFridayOpen.setEnabled(false);
+        this.mHoursFridayClose.setEnabled(false);
+        this.mMinutesFridayClose.setEnabled(false);
+        this.mHoursSaturdayOpen.setEnabled(false);
+        this.mMinutesSaturdayOpen.setEnabled(false);
+        this.mHoursSaturdayClose.setEnabled(false);
+        this.mMinutesSaturdayClose.setEnabled(false);
+        this.mHoursSundayOpen.setEnabled(false);
+        this.mMinutesSundayOpen.setEnabled(false);
+        this.mHoursSundayClose.setEnabled(false);
+        this.mMinutesSundayClose.setEnabled(false);
+        this.mContactsText.setEnabled(false);
+        this.mLocationText.setEnabled(false);
+        this.mTypeOfFoodText.setEnabled(false);
+    }
+
+    private void fillDetails(Intent intent){
+
+        this.mRestaurantName.setText(intent.getStringExtra(RESTAURANT_NAME));
+        this.mHoursMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_HOURS, 0));
+        this.mMinutesMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_MINUTES, 0));
+        this.mHoursTuesdayOpen.setValue(intent.getIntExtra(TUESDAY_OPEN_HOURS, 0));
+        this.mMinutesTuesdayOpen.setValue(intent.getIntExtra(TUESDAY_OPEN_MINUTES, 0));
+        this.mHoursWednesdayOpen.setValue(intent.getIntExtra(WEDNESDAY_OPEN_HOURS, 0));
+        this.mMinutesWednesdayOpen.setValue(intent.getIntExtra(WEDNESDAY_OPEN_MINUTES, 0));
+        this.mHoursThursdayOpen.setValue(intent.getIntExtra(THURSDAY_OPEN_HOURS, 0));
+        this.mMinutesThursdayOpen.setValue(intent.getIntExtra(THURSDAY_OPEN_MINUTES, 0));
+        this.mHoursFridayOpen.setValue(intent.getIntExtra(FRIDAY_OPEN_HOURS, 0));
+        this.mMinutesFridayOpen.setValue(intent.getIntExtra(FRIDAY_OPEN_MINUTES, 0));
+        this.mHoursSaturdayOpen.setValue(intent.getIntExtra(SATURDAY_OPEN_HOURS, 0));
+        this.mMinutesSaturdayOpen.setValue(intent.getIntExtra(SATURDAY_OPEN_MINUTES, 0));
+        this.mHoursSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_HOURS, 0));
+        this.mMinutesSundayOpen.setValue(intent.getIntExtra(SUNDAY_OPEN_MINUTES, 0));
+        this.mLocationText.setText(intent.getStringExtra(LOCATION));
+        this.mContactsText.setText(intent.getStringExtra(CONTACTS));
+        this.mTypeOfFoodText.setText(intent.getStringExtra(TYPE_OF_FOOD));
+    }
+
+    class saveRestaurantDetailsListener implements View.OnClickListener {
+
+        private List<String> typeOfFoodList = new ArrayList<>();
+        private StringTokenizer token = new StringTokenizer(mTypeOfFoodText.getText().toString(), ", ", false);
+
+        private void fillTypeOfFoodList(){
+            while(this.token.hasMoreTokens()){
+                typeOfFoodList.add(token.nextToken());
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            fillTypeOfFoodList();
+
+            Toast.makeText(getApplicationContext(), mRestaurantName.getText().toString(), Toast.LENGTH_SHORT).show();
+
+            Restaurant r = new Restaurant(
+                    UUID.randomUUID().toString(),
+                    mUserID,
+                    mRestaurantName.getText().toString(),
+                    new Hour(mHoursMondayOpen.getValue(), mMinutesMondayOpen.getValue(),
+                            mHoursMondayClose.getValue(), mMinutesMondayClose.getValue()),
+                    new Hour(mHoursTuesdayOpen.getValue(), mMinutesTuesdayOpen.getValue(),
+                            mHoursTuesdayClose.getValue(), mMinutesTuesdayClose.getValue()),
+                    new Hour(mHoursWednesdayOpen.getValue(), mMinutesWednesdayOpen.getValue(),
+                            mHoursWednesdayClose.getValue(), mMinutesWednesdayClose.getValue()),
+                    new Hour(mHoursThursdayOpen.getValue(), mMinutesThursdayOpen.getValue(),
+                            mHoursThursdayClose.getValue(), mMinutesThursdayClose.getValue()),
+                    new Hour(mHoursFridayOpen.getValue(), mMinutesFridayOpen.getValue(),
+                            mHoursFridayClose.getValue(), mMinutesFridayClose.getValue()),
+                    new Hour(mHoursSaturdayOpen.getValue(), mMinutesSaturdayOpen.getValue(),
+                            mHoursSaturdayClose.getValue(), mMinutesSaturdayClose.getValue()),
+                    new Hour(mHoursSundayOpen.getValue(), mMinutesSundayOpen.getValue(),
+                            mHoursSundayClose.getValue(), mMinutesSundayClose.getValue()),
+                    mContactsText.getText().toString(),
+                    mLocationText.getText().toString(),
+                    this.typeOfFoodList
+            );
+            mSpotFoodDataBaseReference.child("restaurants").child(r.getIdRestaurant()).setValue(r);
+        }
     }
 }

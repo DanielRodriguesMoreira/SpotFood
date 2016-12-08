@@ -21,15 +21,16 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.poili.spotfood.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,8 +39,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-public class InitialScreen extends Activity {
+public class InitialScreen extends Activity implements Constants {
 
     private DatabaseReference mSpotFoodDataBaseReference;
     private ImageButton mSearchButton;
@@ -61,16 +63,17 @@ public class InitialScreen extends Activity {
         setContentView(R.layout.activity_initial_screen);
 
         //check internet Connection
-        if(!hasNetworkConnection()){
+        if (!hasNetworkConnection()) {
             internetConnectionErrorDialog md = new internetConnectionErrorDialog();
-            md.show(getFragmentManager(),"TAG");
+            md.show(getFragmentManager(), "TAG");
         }
 
         //inicialize variables
         this.inicializeVariables();
-                                                        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
+        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
+
         //show open restaurants
-        this.searchOpenRestaurants();
+        //this.searchOpenRestaurants();
     }
 
     /** Inicialize all the variables */
@@ -81,6 +84,14 @@ public class InitialScreen extends Activity {
         this.mRestaurantsList = new ArrayList<>();
         this.mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         this.mListRestaurants = (ListView) findViewById(R.id.listRestaurants);
+        this.mListRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String restaurantName = mListRestaurants.getItemAtPosition(i).toString();
+                searchRestaurantByName(restaurantName);
+            }
+        });
         this.mEmptyText = (TextView)findViewById(android.R.id.empty);
         this.mSearchText = (TextView) findViewById(R.id.searchText);
         this.mSearchButton.setOnClickListener(new View.OnClickListener() {
@@ -138,18 +149,18 @@ public class InitialScreen extends Activity {
         Calendar c = Calendar.getInstance();
         int currentTime = c.get(Calendar.HOUR_OF_DAY)*100+c.get(Calendar.MINUTE);
         int day = c.get(Calendar.DAY_OF_WEEK);
-        int restaurantOpen = u.getRestaurantHour(day).getOpen();
-        int restaurantClose = u.getRestaurantHour(day).getClose();
+        int restaurantOpen = u.getRestaurantHour(day).getOpenHour()*100 + u.getRestaurantHour(day).getOpenMinutes();
+        int restaurantClose = u.getRestaurantHour(day).getCloseHour()*100 + u.getRestaurantHour(day).getCloseMinutes();
 
         //in case open hours are lower than close hours and the current time is in that range
-        if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                && currentTime <= u.getRestaurantHour(day).getClose())) {
+        if(restaurantOpen < restaurantClose && (currentTime >= restaurantOpen
+                && currentTime <= restaurantClose)) {
             return true;
         }
                     /* in case open hours are higher than close hours and the current time is higher
                      than open hours and lower than close hours*/
-        else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                || currentTime <= u.getRestaurantHour(day).getClose())) {
+        else if( restaurantOpen > restaurantClose && (currentTime >= restaurantOpen
+                || currentTime <= restaurantClose)) {
             return true;
         }
         return false;
@@ -281,6 +292,97 @@ public class InitialScreen extends Activity {
             public void onCancelled(DatabaseError databaseError) { }
         });
     }
+
+    private void searchRestaurantByName(final String restaurantName) {
+
+        //Check if string is null or empty
+        if (restaurantName == null || restaurantName.isEmpty()) {
+            return;
+        }
+
+        //Get restaurants reference
+        final DatabaseReference restaurantsRef = this.mSpotFoodDataBaseReference.child("restaurants");
+
+        //add Listener
+        restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //Cicle For that go through all the restaurants in firebase database
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
+
+                    if(rest.getName().equals(restaurantName)){
+                        fillRestaurantInformationAndCallIntent(rest);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
+        if(restaurant == null ){
+            return;
+        }
+
+        String restaurantName = restaurant.getName();
+        String location = restaurant.getLocation();
+        String contacts = restaurant.getContacts();
+        List<String> typeOfFoodList = restaurant.getTypeOfFood();
+        String typeOfFood = "";
+        for(int i = 0; i < typeOfFoodList.size(); i++){
+            if(i == typeOfFoodList.size() - 1){
+                typeOfFood += typeOfFoodList.get(i);
+            }
+            else {
+                typeOfFood += typeOfFoodList.get(i) + ", ";
+            }
+        }
+        int mondayOpenHours = restaurant.getMondayHour().getOpenHour();
+        int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
+        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHour();
+        int tuesdayOpenMinutes = restaurant.getTuesdayHour().getOpenMinutes();
+        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHour();
+        int wednesdayOpenMinutes = restaurant.getWednesdayHour().getOpenMinutes();
+        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHour();
+        int thursdayOpenMinutes = restaurant.getThursdayHour().getOpenMinutes();
+        int fridayOpenHours = restaurant.getFridayHour().getOpenHour();
+        int fridayOpenMinutes = restaurant.getFridayHour().getOpenMinutes();
+        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHour();
+        int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
+        int sundayOpenHours = restaurant.getSundayHour().getOpenHour();
+        int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
+
+        Intent intent = new Intent(getApplication(), Details.class);
+        intent.putExtra(ONLYTOSHOW, true);
+        intent.putExtra(RESTAURANT_NAME, restaurantName);
+        intent.putExtra(MONDAY_OPEN_HOURS, mondayOpenHours);
+        intent.putExtra(MONDAY_OPEN_MINUTES, mondayOpenMinutes);
+        intent.putExtra(TUESDAY_OPEN_HOURS, tuesdayOpenHours);
+        intent.putExtra(TUESDAY_OPEN_MINUTES, tuesdayOpenMinutes);
+        intent.putExtra(WEDNESDAY_OPEN_HOURS, wednesdayOpenHours);
+        intent.putExtra(WEDNESDAY_OPEN_MINUTES, wednesdayOpenMinutes);
+        intent.putExtra(THURSDAY_OPEN_HOURS, thursdayOpenHours);
+        intent.putExtra(THURSDAY_OPEN_MINUTES, thursdayOpenMinutes);
+        intent.putExtra(FRIDAY_OPEN_HOURS, fridayOpenHours);
+        intent.putExtra(FRIDAY_OPEN_MINUTES, fridayOpenMinutes);
+        intent.putExtra(SATURDAY_OPEN_HOURS, saturdayOpenHours);
+        intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
+        intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
+        intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
+        intent.putExtra(LOCATION, location);
+        intent.putExtra(CONTACTS, contacts);
+        intent.putExtra(TYPE_OF_FOOD, typeOfFood);
+
+
+        startActivity(intent);
+        finish();
+    }
+
 
     /** Check if there is internet connection on android phone */
     private boolean hasNetworkConnection(){

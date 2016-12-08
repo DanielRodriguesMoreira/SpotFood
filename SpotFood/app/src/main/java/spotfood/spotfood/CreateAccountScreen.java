@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateAccountScreen extends Activity {
+public class CreateAccountScreen extends Activity implements Constants{
 
     private DatabaseReference mSpotFoodDataBaseReference;
     private TextView mUsernameTextView;
@@ -73,6 +74,23 @@ public class CreateAccountScreen extends Activity {
                 String username = mUsernameTextView.getText().toString();
                 String password = mPasswordTextView.getText().toString();
 
+                if(!isLengthCorrect(username) || haveInvalidCharacters(username) || checkIfUsernameAlreadyExists(username)) {
+                    ImageView result= (ImageView)findViewById(R.id.result_user_create_account_icon);
+                    result.setImageResource(R.mipmap.error_icon);
+                    result.setVisibility(ImageView.VISIBLE);
+                } else {
+                    ImageView result= (ImageView)findViewById(R.id.result_user_create_account_icon);
+                    result.setVisibility(ImageView.INVISIBLE);
+                }
+                if(!isLengthCorrect(password) || haveInvalidCharacters(password)) {
+                    ImageView result= (ImageView)findViewById(R.id.result_pass_create_account_icon);
+                    result.setImageResource(R.mipmap.error_icon);
+                    result.setVisibility(ImageView.VISIBLE);
+                } else {
+                    ImageView result= (ImageView)findViewById(R.id.result_pass_create_account_icon);
+                    result.setVisibility(ImageView.INVISIBLE);
+                }
+
                 if (!isLengthCorrect(username)) {
                     Toast.makeText(getApplicationContext(), mUsernameLengthError, Toast.LENGTH_LONG).show();
                 } else if (!isLengthCorrect(password)) {
@@ -98,6 +116,7 @@ public class CreateAccountScreen extends Activity {
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);
 
         Intent intent = new Intent(getApplication(), Details.class);
+        intent.putExtra(USERID, user.getIdUser());
         startActivity(intent);
         finish();
     }

@@ -15,31 +15,51 @@ import java.util.Date;
 
 
 public class Hour {
-    private Date open;
-    private Date close;
+    private int openHour;
+    private int openMinutes;
+    private int closeHour;
+    private int closeMinutes;
 
     public Hour() {
 
     }
 
-    public Hour(Date open, Date close) {
-        this.open = open;
-        this.close = close;
+    public Hour(int openH, int openM, int closeH, int closeM) {
+        this.openHour = openH;
+        this.openMinutes = openM;
+        this.closeHour = closeH;
+        this.closeMinutes = closeM;
     }
 
-    public int getClose() {
-        return close.getHours() * 100 + close.getMinutes();
+    public int getOpenHour() {
+        return openHour;
     }
 
-    public void setClose(Date close) {
-        this.close = close;
+    public void setOpenHour(int openHour) {
+        this.openHour = openHour;
     }
 
-    public int getOpen() {
-        return open.getHours() * 100 + open.getMinutes();
+    public int getOpenMinutes() {
+        return openMinutes;
     }
 
-    public void setOpen(Date open) {
-        this.open = open;
+    public void setOpenMinutes(int openMinutes) {
+        this.openMinutes = openMinutes;
+    }
+
+    public int getCloseHour() {
+        return closeHour;
+    }
+
+    public void setCloseHour(int closeHour) {
+        this.closeHour = closeHour;
+    }
+
+    public int getCloseMinutes() {
+        return closeMinutes;
+    }
+
+    public void setCloseMinutes(int closeMinutes) {
+        this.closeMinutes = closeMinutes;
     }
 }
