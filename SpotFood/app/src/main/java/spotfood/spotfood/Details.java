@@ -47,34 +47,34 @@ public class Details extends Activity {
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
 
-      //Tab 1
+        //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("Tab One");
         spec.setContent(R.id.openHours);
-        spec.setIndicator("Tab One");
+        spec.setIndicator("", getResources().getDrawable(R.mipmap.open_hours_icon));
         host.addTab(spec);
 
         //Tab 2
         spec = host.newTabSpec("Tab Two");
         spec.setContent(R.id.contacts);
-        spec.setIndicator("Tab Two");
+        spec.setIndicator("", getResources().getDrawable(R.mipmap.contacts_icon));
         host.addTab(spec);
 
         //Tab 3
         spec = host.newTabSpec("Tab Three");
         spec.setContent(R.id.location);
-        spec.setIndicator("Tab Three");
+        spec.setIndicator("", getResources().getDrawable(R.mipmap.location_icon));
         host.addTab(spec);
 
         //Tab 4
-        spec = host.newTabSpec("Tab Three");
+        spec = host.newTabSpec("Tab Four");
         spec.setContent(R.id.menu);
-        spec.setIndicator("Tab Three");
+        spec.setIndicator("", getResources().getDrawable(R.mipmap.menu_icon));
         host.addTab(spec);
-        //Tab 5
 
-        spec = host.newTabSpec("Tab Three");
+        //Tab 5
+        spec = host.newTabSpec("Tab Five");
         spec.setContent(R.id.offers);
-        spec.setIndicator("Tab Three");
+        spec.setIndicator("", getResources().getDrawable(R.mipmap.offers_icon));
         host.addTab(spec);
 
         mHoursMondayOpen = (NumberPicker)findViewById(R.id.hoursMondayOpen);

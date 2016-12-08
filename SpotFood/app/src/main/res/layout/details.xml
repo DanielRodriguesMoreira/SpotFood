@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:gravity="right">
             <Button
-                android:id="@+id/loginButton1"
+                android:id="@+id/loginButton"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -42,7 +42,7 @@
                 android:textStyle="normal|bold"
                 android:textSize="25dp"
                 android:textAllCaps="false"
-                android:onClick="clickLogin"/>
+                android:onClick="clickLogout"/>
         </LinearLayout>
     </LinearLayout>
     <TabHost
@@ -70,7 +70,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="2dp"
-                        android:background="@drawable/black_box">
+                        android:background="@drawable/edit_text_restaurants">
 
                     </LinearLayout>
                     <ScrollView
@@ -616,7 +616,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
-                            android:background="@drawable/black_box"
+                            android:background="@drawable/edit_text_restaurants"
                             android:gravity="center"
                             android:layout_weight="20">
                             <ScrollView
@@ -705,7 +705,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
-                            android:background="@drawable/black_box"
+                            android:background="@drawable/edit_text_restaurants"
                             android:gravity="center"
                             android:layout_weight="20">
 
@@ -766,12 +766,12 @@
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/menu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#FFFFFF"
                     android:orientation="vertical">
                     <LinearLayout
-                        android:id="@+id/menu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -793,8 +793,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/add_button"
-                            android:scaleX="1.4"
-                            android:scaleY="1.5"
                             android:layout_gravity="center"
                             android:background="#FFFFFF"
                             android:layout_weight="1">
@@ -806,11 +804,10 @@
                         android:minHeight="180dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@drawable/black_box"
+                        android:background="@drawable/edit_text_restaurants"
                         android:gravity="center"
                         android:weightSum="1"
                         android:padding="4dp">
-
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -832,7 +829,6 @@
                             android:text="Type of food: "
                             />
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="64dp"
@@ -918,7 +914,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
-                            android:background="@drawable/black_box"
+                            android:background="@drawable/edit_text_restaurants"
                             android:gravity="center"
                             android:layout_weight="20"
                             android:weightSum="1">
