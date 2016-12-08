@@ -99,8 +99,8 @@ public class CreateAccountScreen extends Activity {
 
         //TODO: this is to remove
         Toast.makeText(getApplicationContext(), "Utilizar criado com sucesso", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplication(), MenuScreen.class);
-        startActivity(intent);
+        //Intent intent = new Intent(getApplication(), MenuScreen.class);
+        //startActivity(intent);
         finish();
     }
 
