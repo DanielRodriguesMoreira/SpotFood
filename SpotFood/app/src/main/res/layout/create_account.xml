@@ -109,19 +109,20 @@
                 android:textSize="25dp"
                 android:id="@+id/textView2"/>
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/spinnerRestaurants"
                 android:layout_width="219dp"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="right|bottom">
+
             <Button
-                android:id="@+id/loginOk"
+                android:id="@+id/createAccountOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create"
@@ -134,8 +135,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:textAllCaps="false"
-                android:background="@drawable/blue_button"
-                android:onClick="clickCreate"/>
+                android:background="@drawable/blue_button" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

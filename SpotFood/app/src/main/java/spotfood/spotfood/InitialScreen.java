@@ -47,6 +47,11 @@ public class InitialScreen extends Activity {
     private ListView mListRestaurants;
     private ArrayAdapter<String> mAdapter;
     private ArrayList<String> mRestaurantsList;
+    private ImageButton mAddRestaurantButton;
+    private TextView mEmptyText;
+    private boolean mStateLogin; //Used to check if it's login(true) or logout(false)
+    private static final boolean LOGIN = true;
+    private static final boolean LOGOUT = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +67,7 @@ public class InitialScreen extends Activity {
 
         //inicialize variables
         this.inicializeVariables();
-
-
+                                                        //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
         //show open restaurants
         this.searchOpenRestaurants();
     }
@@ -72,9 +76,11 @@ public class InitialScreen extends Activity {
     private void inicializeVariables() {
         //Get database reference
         mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
+        this.mStateLogin = LOGIN;
         this.mRestaurantsList = new ArrayList<>();
         this.mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         this.mListRestaurants = (ListView) findViewById(R.id.listRestaurants);
+        this.mEmptyText = (TextView)findViewById(android.R.id.empty);
         this.mSearchText = (TextView) findViewById(R.id.searchText);
         this.mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,15 +98,25 @@ public class InitialScreen extends Activity {
         this.mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), LoginScreen.class);
-                startActivity(intent);
+                if(mStateLogin == LOGIN){
+                    Intent intent = new Intent(getApplication(), LoginScreen.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else if(mStateLogin == LOGOUT) {
+                    mStateLogin = LOGOUT;
+                    mAddRestaurantButton.setVisibility(View.INVISIBLE);
+                    mLoginButton.setText("Login");
+                }
             }
         });
+        this.mAddRestaurantButton = (ImageButton) findViewById(R.id.addRestaurantButton);
 
         //Set mAdapter to one row of list view
         this.mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mRestaurantsList);
         this.mListRestaurants.setAdapter(this.mAdapter);
 
+        this.checkIntentResult();
     }
 
     /** Search on firebase database all the restaurants that are open at the current time */
@@ -135,7 +151,13 @@ public class InitialScreen extends Activity {
                     }
                 }
 
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants open at this time!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -163,8 +185,13 @@ public class InitialScreen extends Activity {
                     mRestaurantsList.add(rest.getName());
                 }
 
-                //refresh ListView
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants on Firebase Database!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -217,8 +244,14 @@ public class InitialScreen extends Activity {
                     }
                 }
 
-                //refresh ListView
-                mAdapter.notifyDataSetChanged();
+                if(mRestaurantsList.size() == 0){
+                    mEmptyText.setText("There are no restaurants with that name" +
+                            " or that serve that type of food!");
+                    mListRestaurants.setEmptyView(mEmptyText);
+                }
+                else{
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -233,6 +266,22 @@ public class InitialScreen extends Activity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
+    }
+
+    /** Check if this class was called by an intent */
+    private void checkIntentResult() {
+        Intent intent = getIntent();
+        boolean userRole = intent.getBooleanExtra("ADMIN", false);
+        if(userRole){
+            this.mStateLogin = LOGOUT;
+            this.mLoginButton.setText("Logout");
+            this.mAddRestaurantButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     /** Fragment Dialog to show internet connection error */
