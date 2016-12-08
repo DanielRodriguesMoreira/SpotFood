@@ -681,6 +681,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:id="@+id/locationText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Location"
@@ -817,6 +818,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/typeOfFood"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:paddingTop="10dp"
