@@ -8,11 +8,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.poili.spotfood.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class Details extends Activity {
+public class Details extends Activity implements Constants{
 
+    private DatabaseReference mSpotFoodDataBaseReference;
     private TabHost tabHost;
     private NumberPicker mHoursMondayOpen;
     private NumberPicker mMinutesMondayOpen;
@@ -43,6 +51,8 @@ public class Details extends Activity {
     private NumberPicker mHoursSundayClose;
     private NumberPicker mMinutesSundayClose;
     private Button mLogoutButton;
+    private TextView mRestaurantName;
+    private Restaurant mRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +60,14 @@ public class Details extends Activity {
         setContentView(R.layout.details);
 
         this.inicializeVariables();
+
+        this.checkIntentResult();
     }
 
     private void inicializeVariables() {
 
+        mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
+        this.mRestaurantName = (TextView)findViewById(R.id.nameRestaurant);
         this.mLogoutButton = (Button)findViewById(R.id.loginButton);
         this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,7 +237,7 @@ public class Details extends Activity {
         mMinutesSundayClose.setFormatter(new MyTwoDigitFormatter());
     }
 
-    public class MyTwoDigitFormatter implements NumberPicker.Formatter {
+    class MyTwoDigitFormatter implements NumberPicker.Formatter {
         public String format(int value) {
             return String.format("%02d", value);
         }
@@ -234,5 +248,21 @@ public class Details extends Activity {
         Intent intent = new Intent(getApplication(), InitialScreen.class);
         startActivity(intent);
         finish();
+    }
+
+    /** Check if this class was called by an intent */
+    private void checkIntentResult() {
+        Intent intent = getIntent();
+        boolean onlyToShow = intent.getBooleanExtra(ONLYTOSHOW, false);
+        if(onlyToShow){
+            fillDetails(intent);
+        }
+    }
+
+    private void fillDetails(Intent intent){
+
+        this.mRestaurantName.setText(intent.getStringExtra(RESTAURANT_NAME));
+        this.mHoursMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_HOURS, 0));
+        this.mMinutesMondayOpen.setValue(intent.getIntExtra(MONDAY_OPEN_MINUTES, 0));
     }
 }
