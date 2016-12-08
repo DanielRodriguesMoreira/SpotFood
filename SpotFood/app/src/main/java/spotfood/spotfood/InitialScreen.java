@@ -72,7 +72,7 @@ public class InitialScreen extends Activity implements Constants {
         //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
 
         //show open restaurants
-        //this.searchOpenRestaurants();
+        this.searchOpenRestaurants();
     }
 
     /** Inicialize all the variables */
@@ -311,12 +311,13 @@ public class InitialScreen extends Activity implements Constants {
         String contacts = restaurant.getContacts();
         List<String> typeOfFoodList = restaurant.getTypeOfFood();
         String typeOfFood = "";
-        for(int i = 0; i < typeOfFoodList.size(); i++){
-            if(i == typeOfFoodList.size() - 1){
-                typeOfFood += typeOfFoodList.get(i);
-            }
-            else {
-                typeOfFood += typeOfFoodList.get(i) + ", ";
+        if(typeOfFoodList != null) {
+            for (int i = 0; i < typeOfFoodList.size(); i++) {
+                if (i == typeOfFoodList.size() - 1) {
+                    typeOfFood += typeOfFoodList.get(i);
+                } else {
+                    typeOfFood += typeOfFoodList.get(i) + ", ";
+                }
             }
         }
         int mondayOpenHours = restaurant.getMondayHour().getOpenHour();
@@ -333,6 +334,20 @@ public class InitialScreen extends Activity implements Constants {
         int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
         int sundayOpenHours = restaurant.getSundayHour().getOpenHour();
         int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
+        int mondayCloseHours = restaurant.getMondayHour().getCloseHour();
+        int mondayCloseMinutes = restaurant.getMondayHour().getCloseMinutes();
+        int tuesdayCloseHours = restaurant.getTuesdayHour().getCloseHour();
+        int tuesdayCloseMinutes = restaurant.getTuesdayHour().getCloseMinutes();
+        int wednesdayCloseHours = restaurant.getWednesdayHour().getCloseHour();
+        int wednesdayCloseMinutes = restaurant.getWednesdayHour().getCloseMinutes();
+        int thursdayCloseHours = restaurant.getThursdayHour().getCloseHour();
+        int thursdayCloseMinutes = restaurant.getThursdayHour().getCloseMinutes();
+        int fridayCloseHours = restaurant.getFridayHour().getCloseHour();
+        int fridayCloseMinutes = restaurant.getFridayHour().getCloseMinutes();
+        int saturdayCloseHours = restaurant.getSaturdayHour().getCloseHour();
+        int saturdayCloseMinutes = restaurant.getSaturdayHour().getCloseMinutes();
+        int sundayCloseHours = restaurant.getSundayHour().getCloseHour();
+        int sundayCloseMinutes = restaurant.getSundayHour().getCloseMinutes();
 
         Intent intent = new Intent(getApplication(), Details.class);
         intent.putExtra(ONLYTOSHOW, true);
@@ -351,6 +366,20 @@ public class InitialScreen extends Activity implements Constants {
         intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
         intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
         intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
+        intent.putExtra(MONDAY_CLOSE_HOURS, mondayCloseHours);
+        intent.putExtra(MONDAY_CLOSE_MINUTES, mondayCloseMinutes);
+        intent.putExtra(TUESDAY_CLOSE_HOURS, tuesdayCloseHours);
+        intent.putExtra(TUESDAY_CLOSE_MINUTES, tuesdayCloseMinutes);
+        intent.putExtra(WEDNESDAY_CLOSE_HOURS, wednesdayCloseHours);
+        intent.putExtra(WEDNESDAY_CLOSE_MINUTES, wednesdayCloseMinutes);
+        intent.putExtra(THURSDAY_CLOSE_HOURS, thursdayCloseHours);
+        intent.putExtra(THURSDAY_CLOSE_MINUTES, thursdayCloseMinutes);
+        intent.putExtra(FRIDAY_CLOSE_HOURS, fridayCloseHours);
+        intent.putExtra(FRIDAY_CLOSE_MINUTES, fridayCloseMinutes);
+        intent.putExtra(SATURDAY_CLOSE_HOURS, saturdayCloseHours);
+        intent.putExtra(SATURDAY_CLOSE_MINUTES, saturdayCloseMinutes);
+        intent.putExtra(SUNDAY_CLOSE_HOURS, sundayCloseHours);
+        intent.putExtra(SUNDAY_CLOSE_MINUTES, sundayCloseMinutes);
         intent.putExtra(LOCATION, location);
         intent.putExtra(CONTACTS, contacts);
         intent.putExtra(TYPE_OF_FOOD, typeOfFood);
