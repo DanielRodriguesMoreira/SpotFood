@@ -19,8 +19,10 @@ public class RestaurantTest
     public void setUp() throws Exception
     {
         List<String> typeOfFood = null;
+
         Date openDate = new Date(0, 0, 0, 14, 20);
         Date closeDate = new Date(0, 0, 0, 20, 30);
+
         mondayHour = new Hour(openDate, closeDate);
         tuesdayHour = new Hour(openDate, closeDate);
         wednesdayHour = new Hour(openDate, closeDate);
