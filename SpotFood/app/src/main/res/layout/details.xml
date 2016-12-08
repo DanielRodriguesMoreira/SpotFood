@@ -793,7 +793,8 @@
                                     android:src="@mipmap/add_button"
                                     android:layout_gravity="center"
                                     android:background="#FFFFFF"
-                                    android:layout_weight="1">
+                                    android:layout_weight="1"
+                                    android:onClick="clickAddMenu">
                                 </ImageButton>
                             </LinearLayout>
                             <LinearLayout
