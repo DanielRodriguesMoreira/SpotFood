@@ -92,7 +92,7 @@ public class Details extends Activity implements Constants{
         this.mLogoutButton = (Button)findViewById(R.id.loginButton);
         this.mSaveHoursButton = (ImageButton) findViewById(R.id.saveButtonHours);
         this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
-        this.mDeleteHoursButton = (ImageButton) findViewById(R.id.deleteButtonHours);
+        this.mDeleteHoursButton = (ImageButton) findViewById(R.id.deleteButton);
         this.mSaveConctactsButton = (ImageButton)findViewById(R.id.saveButtonContacts);
         this.mDeleteContactsButton = (ImageButton)findViewById(R.id.deleteButtonContacts);
         this.mSaveLocationButton = (ImageButton)findViewById(R.id.saveButtonLocation);
