@@ -13,36 +13,29 @@
         android:orientation="horizontal"
         android:minHeight="75dp"
         android:background="#090b93">
-
         <TextView
             android:id="@+id/nameRestaurant"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:minWidth="280dp"
-            android:minHeight="68dp"
+            android:layout_weight="1"
             android:text="McDonalds"
             android:textColor="#FFFFFF"
             android:textSize="35dp"
             android:paddingStart="15dp"
             android:paddingTop="25dp"
             android:textStyle="normal|bold"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="right">
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="12dp"
-                android:background="@null"
-                android:text="Logout"
-                android:textColor="#FFFFFF"
-                android:textStyle="normal|bold"
-                android:textSize="25dp"
-                android:textAllCaps="false" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@null"
+            android:text="Logout"
+            android:textColor="#FFFFFF"
+            android:textStyle="normal|bold"
+            android:textSize="25dp"
+            android:textAllCaps="false"
+            android:onClick="clickLogout"/>
     </LinearLayout>
     <TabHost
         android:id="@+id/tabHost"
