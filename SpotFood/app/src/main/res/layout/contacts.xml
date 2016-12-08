@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/edit_text_restaurants"
+            android:background="@drawable/black_box"
             android:gravity="center"
             android:layout_weight="20">
                 <ScrollView
