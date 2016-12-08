@@ -20,16 +20,13 @@ public class RestaurantTest
     {
         List<String> typeOfFood = null;
 
-        Date openDate = new Date(0, 0, 0, 14, 20);
-        Date closeDate = new Date(0, 0, 0, 20, 30);
-
-        mondayHour = new Hour(openDate, closeDate);
-        tuesdayHour = new Hour(openDate, closeDate);
-        wednesdayHour = new Hour(openDate, closeDate);
-        thrusdayHour = new Hour(openDate, closeDate);
-        fridayHour = new Hour(openDate, closeDate);
-        saturdayHour = new Hour(openDate, closeDate);
-        sundayHour = new Hour(openDate, closeDate);
+        mondayHour = new Hour(12, 00, 15, 00);
+        tuesdayHour = new Hour(12, 00, 15, 00);
+        wednesdayHour = new Hour(12, 00, 15, 00);
+        thrusdayHour = new Hour(12, 00, 15, 00);
+        fridayHour = new Hour(12, 00, 15, 00);
+        saturdayHour = new Hour(12, 00, 15, 00);
+        sundayHour = new Hour(12, 00, 15, 00);
 
         testingRestaurant = new Restaurant("1", "1", "RestauranteTeste", mondayHour, tuesdayHour, wednesdayHour, thrusdayHour, fridayHour,
                 saturdayHour, sundayHour, "231527802", "Rua de trás", typeOfFood);
