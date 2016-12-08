@@ -1,7 +1,11 @@
 package spotfood.spotfood;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TabHost;
 
@@ -38,44 +42,59 @@ public class Details extends Activity {
     private NumberPicker mMinutesSundayOpen;
     private NumberPicker mHoursSundayClose;
     private NumberPicker mMinutesSundayClose;
+    private Button mLogoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details);
 
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
-        host.setup();
+        this.inicializeVariables();
+    }
 
-      //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Tab One");
+    private void inicializeVariables() {
+
+        this.mLogoutButton = (Button)findViewById(R.id.loginButton);
+        this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication(), InitialScreen.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        tabHost = (TabHost)findViewById(R.id.tabHost);
+        tabHost.setup();
+
+        //Tab 1
+        TabHost.TabSpec spec = tabHost.newTabSpec("Tab One");
         spec.setContent(R.id.openHours);
         spec.setIndicator("Tab One");
-        host.addTab(spec);
+        tabHost.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("Tab Two");
+        spec = tabHost.newTabSpec("Tab Two");
         spec.setContent(R.id.contacts);
         spec.setIndicator("Tab Two");
-        host.addTab(spec);
+        tabHost.addTab(spec);
 
         //Tab 3
-        spec = host.newTabSpec("Tab Three");
+        spec = tabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.location);
         spec.setIndicator("Tab Three");
-        host.addTab(spec);
+        tabHost.addTab(spec);
 
         //Tab 4
-        spec = host.newTabSpec("Tab Three");
+        spec = tabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.menu);
         spec.setIndicator("Tab Three");
-        host.addTab(spec);
+        tabHost.addTab(spec);
         //Tab 5
 
-        spec = host.newTabSpec("Tab Three");
+        spec = tabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.offers);
         spec.setIndicator("Tab Three");
-        host.addTab(spec);
+        tabHost.addTab(spec);
 
         mHoursMondayOpen = (NumberPicker)findViewById(R.id.hoursMondayOpen);
         mMinutesMondayOpen = (NumberPicker)findViewById(R.id.minutesMondayOpen);
@@ -114,99 +133,106 @@ public class Details extends Activity {
 
         mHoursMondayOpen.setMinValue(0);
         mHoursMondayOpen.setMaxValue(23);
-        mHoursMondayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursMondayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesMondayOpen.setMinValue(0);
         mMinutesMondayOpen.setMaxValue(59);
-        mMinutesMondayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesMondayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursMondayClose.setMinValue(0);
         mHoursMondayClose.setMaxValue(23);
-        mHoursMondayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursMondayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesMondayClose.setMinValue(0);
         mMinutesMondayClose.setMaxValue(59);
-        mMinutesMondayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesMondayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursTuesdayOpen.setMinValue(0);
         mHoursTuesdayOpen.setMaxValue(23);
-        mHoursTuesdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursTuesdayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesTuesdayOpen.setMinValue(0);
         mMinutesTuesdayOpen.setMaxValue(59);
-        mMinutesTuesdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesTuesdayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursTuesdayClose.setMinValue(0);
         mHoursTuesdayClose.setMaxValue(23);
-        mHoursTuesdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursTuesdayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesTuesdayClose.setMinValue(0);
         mMinutesTuesdayClose.setMaxValue(59);
-        mMinutesTuesdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesTuesdayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursWednesdayOpen.setMinValue(0);
         mHoursWednesdayOpen.setMaxValue(23);
-        mHoursWednesdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursWednesdayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesWednesdayOpen.setMinValue(0);
         mMinutesWednesdayOpen.setMaxValue(59);
-        mMinutesWednesdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesWednesdayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursWednesdayClose.setMinValue(0);
         mHoursWednesdayClose.setMaxValue(23);
-        mHoursWednesdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursWednesdayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesWednesdayClose.setMinValue(0);
         mMinutesWednesdayClose.setMaxValue(59);
-        mMinutesWednesdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesWednesdayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursThursdayOpen.setMinValue(0);
         mHoursThursdayOpen.setMaxValue(23);
-        mHoursThursdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursThursdayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesThursdayOpen.setMinValue(0);
         mMinutesThursdayOpen.setMaxValue(59);
-        mMinutesThursdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesThursdayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursThursdayClose.setMinValue(0);
         mHoursThursdayClose.setMaxValue(23);
-        mHoursThursdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursThursdayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesThursdayClose.setMinValue(0);
         mMinutesThursdayClose.setMaxValue(59);
-        mMinutesThursdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesThursdayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursFridayOpen.setMinValue(0);
         mHoursFridayOpen.setMaxValue(23);
-        mHoursFridayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursFridayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesFridayOpen.setMinValue(0);
         mMinutesFridayOpen.setMaxValue(59);
-        mMinutesFridayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesFridayOpen.setFormatter(new MyTwoDigitFormatter());
         mMoursFridayClose.setMinValue(0);
         mMoursFridayClose.setMaxValue(23);
-        mMoursFridayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMoursFridayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesFridayClose.setMinValue(0);
         mMinutesFridayClose.setMaxValue(59);
-        mMinutesFridayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesFridayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursSaturdayOpen.setMinValue(0);
         mHoursSaturdayOpen.setMaxValue(23);
-        mHoursSaturdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursSaturdayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesSaturdayOpen.setMinValue(0);
         mMinutesSaturdayOpen.setMaxValue(59);
-        mMinutesSaturdayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesSaturdayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursSaturdayClose.setMinValue(0);
         mHoursSaturdayClose.setMaxValue(23);
-        mHoursSaturdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursSaturdayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesSaturdayClose.setMinValue(0);
         mMinutesSaturdayClose.setMaxValue(59);
-        mMinutesSaturdayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesSaturdayClose.setFormatter(new MyTwoDigitFormatter());
 
         mHoursSundayOpen.setMinValue(0);
         mHoursSundayOpen.setMaxValue(23);
-        mHoursSundayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursSundayOpen.setFormatter(new MyTwoDigitFormatter());
         mMinutesSundayOpen.setMinValue(0);
         mMinutesSundayOpen.setMaxValue(59);
-        mMinutesSundayOpen.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesSundayOpen.setFormatter(new MyTwoDigitFormatter());
         mHoursSundayClose.setMinValue(0);
         mHoursSundayClose.setMaxValue(23);
-        mHoursSundayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mHoursSundayClose.setFormatter(new MyTwoDigitFormatter());
         mMinutesSundayClose.setMinValue(0);
         mMinutesSundayClose.setMaxValue(59);
-        mMinutesSundayClose.setFormatter(new Details.MyTwoDigitFormatter());
+        mMinutesSundayClose.setFormatter(new MyTwoDigitFormatter());
     }
 
     public class MyTwoDigitFormatter implements NumberPicker.Formatter {
         public String format(int value) {
             return String.format("%02d", value);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplication(), InitialScreen.class);
+        startActivity(intent);
+        finish();
     }
 }

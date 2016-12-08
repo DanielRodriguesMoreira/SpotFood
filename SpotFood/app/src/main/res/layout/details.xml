@@ -41,8 +41,7 @@
                 android:textColor="#FFFFFF"
                 android:textStyle="normal|bold"
                 android:textSize="25dp"
-                android:textAllCaps="false"
-                android:onClick="clickLogin"/>
+                android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
     <TabHost
