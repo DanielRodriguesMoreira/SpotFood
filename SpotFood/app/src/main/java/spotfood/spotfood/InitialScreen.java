@@ -96,11 +96,8 @@ public class InitialScreen extends Activity implements Constants {
         this.mListRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 Restaurant res = mRestaurantsList.get(i);
                 fillRestaurantInformationAndCallIntent(res);
-                //searchRestaurantByName(restaurantName);
-
             }
         });
         this.mEmptyText = (TextView) findViewById(android.R.id.empty);
@@ -298,38 +295,6 @@ public class InitialScreen extends Activity implements Constants {
                     mListRestaurants.setEmptyView(mEmptyText);
                 } else {
                     mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-    private void searchRestaurantByName(final String restaurantName) {
-
-        //Check if string is null or empty
-        if (restaurantName == null || restaurantName.isEmpty()) {
-            return;
-        }
-
-        //Get restaurants reference
-        final DatabaseReference restaurantsRef = this.mSpotFoodDataBaseReference.child("restaurants");
-
-        //add Listener
-        restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //Cicle For that go through all the restaurants in firebase database
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
-
-                    if (rest.getName().equals(restaurantName)) {
-                        fillRestaurantInformationAndCallIntent(rest);
-                        break;
-                    }
                 }
             }
 
