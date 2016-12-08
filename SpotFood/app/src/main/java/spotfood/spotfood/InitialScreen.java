@@ -18,16 +18,23 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -73,10 +80,12 @@ public class InitialScreen extends Activity implements Constants {
         //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
 
         //show open restaurants
-        //this.searchOpenRestaurants();
+        this.searchOpenRestaurants();
     }
 
-    /** Inicialize all the variables */
+    /**
+     * Inicialize all the variables
+     */
     private void inicializeVariables() {
         //Get database reference
         mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
@@ -88,34 +97,34 @@ public class InitialScreen extends Activity implements Constants {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                String restaurantName = mListRestaurants.getItemAtPosition(i).toString();
-                searchRestaurantByName(restaurantName);
+                Restaurant res = mRestaurantsList.get(i);
+                fillRestaurantInformationAndCallIntent(res);
+                //searchRestaurantByName(restaurantName);
+
             }
         });
-        this.mEmptyText = (TextView)findViewById(android.R.id.empty);
+        this.mEmptyText = (TextView) findViewById(android.R.id.empty);
         this.mSearchText = (TextView) findViewById(R.id.searchText);
         this.mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mSearchText.getText().toString() == null || mSearchText.getText().length() == 0) {
                     searchOpenRestaurants();
-                }
-                else {
+                } else {
                     searchRestaurantByNameOrTypeOfFood(mSearchText.getText().toString());
                 }
             }
 
         });
-        this.mLoginButton = (Button)findViewById(R.id.loginButton);
+        this.mLoginButton = (Button) findViewById(R.id.loginButton);
         this.mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mStateLogin == LOGIN){
+                if (mStateLogin == LOGIN) {
                     Intent intent = new Intent(getApplication(), LoginScreen.class);
                     startActivity(intent);
                     finish();
-                }
-                else if(mStateLogin == LOGOUT) {
+                } else if (mStateLogin == LOGOUT) {
                     mStateLogin = LOGOUT;
                     mAddRestaurantButton.setVisibility(View.INVISIBLE);
                     mLoginButton.setText("Login");
@@ -125,17 +134,14 @@ public class InitialScreen extends Activity implements Constants {
         this.mAddRestaurantButton = (ImageButton) findViewById(R.id.addRestaurantButton);
 
         //Set mAdapter to one row of list view
-        this.mAdapter = new ArrayAdapter<Restaurant>(this, R.layout.linha, mRestaurantsList){
+        this.mAdapter = new ArrayAdapter<Restaurant>(this, android.R.layout.simple_list_item_1, mRestaurantsList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
-                //TextView tv = (TextView) convertView.findViewById(R.id.text1);
                 Restaurant u = mRestaurantsList.get(position);
-                ((TextView)convertView.findViewById(R.id.text1)).setText(u.getName());
-
                 int textColor = checkOpenRestaurant(u) ? R.color.green : R.color.red;
                 textView.setBackgroundColor(getResources().getColor(textColor));
-
+                textView.setText(u.getName());
                 return textView;
             }
         };
@@ -144,29 +150,33 @@ public class InitialScreen extends Activity implements Constants {
         this.checkIntentResult();
     }
 
-    /** Check if a specific restaurant is open at the current time */
-    private boolean checkOpenRestaurant(Restaurant u){
+    /**
+     * Check if a specific restaurant is open at the current time
+     */
+    private boolean checkOpenRestaurant(Restaurant u) {
         Calendar c = Calendar.getInstance();
-        int currentTime = c.get(Calendar.HOUR_OF_DAY)*100+c.get(Calendar.MINUTE);
+        int currentTime = c.get(Calendar.HOUR_OF_DAY) * 100 + c.get(Calendar.MINUTE);
         int day = c.get(Calendar.DAY_OF_WEEK);
-        int restaurantOpen = u.getRestaurantHour(day).getOpenHour()*100 + u.getRestaurantHour(day).getOpenMinutes();
-        int restaurantClose = u.getRestaurantHour(day).getCloseHour()*100 + u.getRestaurantHour(day).getCloseMinutes();
+        int restaurantOpen = u.getRestaurantHour(day).getOpenHour() * 100 + u.getRestaurantHour(day).getOpenMinutes();
+        int restaurantClose = u.getRestaurantHour(day).getCloseHour() * 100 + u.getRestaurantHour(day).getCloseMinutes();
 
         //in case open hours are lower than close hours and the current time is in that range
-        if(restaurantOpen < restaurantClose && (currentTime >= restaurantOpen
+        if (restaurantOpen < restaurantClose && (currentTime >= restaurantOpen
                 && currentTime <= restaurantClose)) {
             return true;
         }
                     /* in case open hours are higher than close hours and the current time is higher
                      than open hours and lower than close hours*/
-        else if( restaurantOpen > restaurantClose && (currentTime >= restaurantOpen
+        else if (restaurantOpen > restaurantClose && (currentTime >= restaurantOpen
                 || currentTime <= restaurantClose)) {
             return true;
         }
         return false;
     }
 
-    /** Search on firebase database all the restaurants that are open at the current time */
+    /**
+     * Search on firebase database all the restaurants that are open at the current time
+     */
     private void searchOpenRestaurants() {
 
         mRestaurantsList.clear();
@@ -176,30 +186,32 @@ public class InitialScreen extends Activity implements Constants {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Restaurant u = postSnapshot.getValue(Restaurant.class);
 
                     //check if it's open
-                    if(checkOpenRestaurant(u)) {
+                    if (checkOpenRestaurant(u)) {
                         mRestaurantsList.add(u);
                     }
                 }
 
-                if(mRestaurantsList.size() == 0){
+                if (mRestaurantsList.size() == 0) {
                     mEmptyText.setText("There are no restaurants open at this time!");
                     mListRestaurants.setEmptyView(mEmptyText);
-                }
-                else{
+                } else {
                     mAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
-    /** Search on firebase database all the restaurants (this is for administrator) */
+    /**
+     * Search on firebase database all the restaurants (this is for administrator)
+     */
     private void searchAllRestaurants() {
 
         mRestaurantsList.clear();
@@ -214,26 +226,28 @@ public class InitialScreen extends Activity implements Constants {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //Cicle For that go through all the restaurants in firebase database
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
                     mRestaurantsList.add(rest);
                 }
 
-                if(mRestaurantsList.size() == 0){
+                if (mRestaurantsList.size() == 0) {
                     mEmptyText.setText("There are no restaurants on Firebase Database!");
                     mListRestaurants.setEmptyView(mEmptyText);
-                }
-                else{
+                } else {
                     mAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
-    /** Search on firebase database all the restaurants by their name or type of food */
+    /**
+     * Search on firebase database all the restaurants by their name or type of food
+     */
     private void searchRestaurantByNameOrTypeOfFood(final String nameOrTypeOfFood) {
 
         //Check if string is null or empty
@@ -254,15 +268,15 @@ public class InitialScreen extends Activity implements Constants {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //Cicle For that go through all the restaurants in firebase database
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
                     boolean find = false;
 
                     //search by type of food
-                    if(rest.getTypeOfFood() != null) {
+                    if (rest.getTypeOfFood() != null) {
                         for (String typeOfFood : rest.getTypeOfFood()) {
                             //if (typeOfFood.toUpperCase().equals(nameOrTypeOfFood.toUpperCase())) {
-                            if(typeOfFood.toUpperCase().contains(nameOrTypeOfFood.toUpperCase())){
+                            if (typeOfFood.toUpperCase().contains(nameOrTypeOfFood.toUpperCase())) {
                                 find = true;
                                 mRestaurantsList.add(rest);
                                 break;
@@ -271,25 +285,25 @@ public class InitialScreen extends Activity implements Constants {
                     }
 
                     //search by name if not find by type of food
-                    if(!find){
-                        if(rest.getName().toUpperCase().contains(nameOrTypeOfFood.toUpperCase())){
+                    if (!find) {
+                        if (rest.getName().toUpperCase().contains(nameOrTypeOfFood.toUpperCase())) {
                             mRestaurantsList.add(rest);
                         }
                     }
                 }
 
-                if(mRestaurantsList.size() == 0){
+                if (mRestaurantsList.size() == 0) {
                     mEmptyText.setText("There are no restaurants with that name" +
                             " or that serve that type of food!");
                     mListRestaurants.setEmptyView(mEmptyText);
-                }
-                else{
+                } else {
                     mAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
@@ -309,10 +323,10 @@ public class InitialScreen extends Activity implements Constants {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //Cicle For that go through all the restaurants in firebase database
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
 
-                    if(rest.getName().equals(restaurantName)){
+                    if (rest.getName().equals(restaurantName)) {
                         fillRestaurantInformationAndCallIntent(rest);
                         break;
                     }
@@ -320,12 +334,13 @@ public class InitialScreen extends Activity implements Constants {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
     private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
-        if(restaurant == null ){
+        if (restaurant == null) {
             return;
         }
 
@@ -334,11 +349,10 @@ public class InitialScreen extends Activity implements Constants {
         String contacts = restaurant.getContacts();
         List<String> typeOfFoodList = restaurant.getTypeOfFood();
         String typeOfFood = "";
-        for(int i = 0; i < typeOfFoodList.size(); i++){
-            if(i == typeOfFoodList.size() - 1){
+        for (int i = 0; i < typeOfFoodList.size(); i++) {
+            if (i == typeOfFoodList.size() - 1) {
                 typeOfFood += typeOfFoodList.get(i);
-            }
-            else {
+            } else {
                 typeOfFood += typeOfFoodList.get(i) + ", ";
             }
         }
@@ -384,20 +398,24 @@ public class InitialScreen extends Activity implements Constants {
     }
 
 
-    /** Check if there is internet connection on android phone */
-    private boolean hasNetworkConnection(){
-        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    /**
+     * Check if there is internet connection on android phone
+     */
+    private boolean hasNetworkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
     }
 
-    /** Check if this class was called by an intent */
+    /**
+     * Check if this class was called by an intent
+     */
     private void checkIntentResult() {
         Intent intent = getIntent();
         boolean userRole = intent.getBooleanExtra("ADMIN", false);
-        if(userRole){
+        if (userRole) {
             this.mStateLogin = LOGOUT;
             this.mLoginButton.setText("Logout");
             this.mAddRestaurantButton.setVisibility(View.VISIBLE);
@@ -409,12 +427,14 @@ public class InitialScreen extends Activity implements Constants {
         finish();
     }
 
-    /** Fragment Dialog to show internet connection error */
+    /**
+     * Fragment Dialog to show internet connection error
+     */
     class internetConnectionErrorDialog extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder .setTitle("ERROR")
+            builder.setTitle("ERROR")
                     .setMessage("No internet connection")
                     .setIcon(android.R.drawable.stat_notify_error)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

@@ -8,9 +8,9 @@
 
     <TextView
         android:textSize="24sp"
-        android:text="textoA"
+        android:text=""
         android:gravity="center_vertical|left"
-        android:id="@+id/text1"
+        android:id="@+id/linhatv"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content" />
