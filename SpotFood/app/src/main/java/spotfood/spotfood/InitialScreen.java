@@ -21,14 +21,15 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.poili.spotfood.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,7 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class InitialScreen extends Activity {
+public class InitialScreen extends Activity implements Constants {
 
     private DatabaseReference mSpotFoodDataBaseReference;
     private ImageButton mSearchButton;
@@ -80,6 +81,14 @@ public class InitialScreen extends Activity {
         this.mRestaurantsList = new ArrayList<>();
         this.mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         this.mListRestaurants = (ListView) findViewById(R.id.listRestaurants);
+        this.mListRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String restaurantName = mListRestaurants.getItemAtPosition(i).toString();
+                searchRestaurantByName(restaurantName);
+            }
+        });
         this.mEmptyText = (TextView)findViewById(android.R.id.empty);
         this.mSearchText = (TextView) findViewById(R.id.searchText);
         this.mSearchButton.setOnClickListener(new View.OnClickListener() {
@@ -258,6 +267,80 @@ public class InitialScreen extends Activity {
             public void onCancelled(DatabaseError databaseError) { }
         });
     }
+
+    private void searchRestaurantByName(final String restaurantName) {
+
+        //Check if string is null or empty
+        if (restaurantName == null || restaurantName.isEmpty()) {
+            return;
+        }
+
+        //Get restaurants reference
+        final DatabaseReference restaurantsRef = this.mSpotFoodDataBaseReference.child("restaurants");
+
+        //add Listener
+        restaurantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //Cicle For that go through all the restaurants in firebase database
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
+
+                    if(rest.getName().equals(restaurantName)){
+                        fillRestaurantInformationAndCallIntent(rest);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
+        if(restaurant == null ){
+            return;
+        }
+
+        String restaurantName = restaurant.getName();
+        int mondayOpenHours = restaurant.getMondayHour().getOpenHours();
+        int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
+        int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHours();
+        int tuesdayOpenMinutes = restaurant.getTuesdayHour().getOpenMinutes();
+        int wednesdayOpenHours = restaurant.getWednesdayHour().getOpenHours();
+        int wednesdayOpenMinutes = restaurant.getWednesdayHour().getOpenMinutes();
+        int thursdayOpenHours = restaurant.getThursdayHour().getOpenHours();
+        int thursdayOpenMinutes = restaurant.getThursdayHour().getOpenMinutes();
+        int fridayOpenHours = restaurant.getFridayHour().getOpenHours();
+        int fridayOpenMinutes = restaurant.getFridayHour().getOpenMinutes();
+        int saturdayOpenHours = restaurant.getSaturdayHour().getOpenHours();
+        int saturdayOpenMinutes = restaurant.getSaturdayHour().getOpenMinutes();
+        int sundayOpenHours = restaurant.getSundayHour().getOpenHours();
+        int sundayOpenMinutes = restaurant.getSundayHour().getOpenMinutes();
+
+        Intent intent = new Intent(getApplication(), Details.class);
+        intent.putExtra(ONLYTOSHOW, true);
+        intent.putExtra(RESTAURANT_NAME, restaurantName);
+        intent.putExtra(MONDAY_OPEN_HOURS, mondayOpenHours);
+        intent.putExtra(MONDAY_OPEN_MINUTES, mondayOpenMinutes);
+        intent.putExtra(TUESDAY_OPEN_HOURS, tuesdayOpenHours);
+        intent.putExtra(TUESDAY_OPEN_MINUTES, tuesdayOpenMinutes);
+        intent.putExtra(WEDNESDAY_OPEN_HOURS, wednesdayOpenHours);
+        intent.putExtra(WEDNESDAY_OPEN_MINUTES, wednesdayOpenMinutes);
+        intent.putExtra(THURSDAY_OPEN_HOURS, thursdayOpenHours);
+        intent.putExtra(THURSDAY_OPEN_MINUTES, thursdayOpenMinutes);
+        intent.putExtra(FRIDAY_OPEN_HOURS, fridayOpenHours);
+        intent.putExtra(FRIDAY_OPEN_MINUTES, fridayOpenMinutes);
+        intent.putExtra(SATURDAY_OPEN_HOURS, saturdayOpenHours);
+        intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
+        intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
+        intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
+
+        startActivity(intent);
+        finish();
+    }
+
 
     /** Check if there is internet connection on android phone */
     private boolean hasNetworkConnection(){

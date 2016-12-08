@@ -39,6 +39,14 @@ public class Hour {
         return open.getHours() * 100 + open.getMinutes();
     }
 
+    public int getOpenHours(){
+        return open.getHours();
+    }
+
+    public int getOpenMinutes(){
+        return open.getMinutes();
+    }
+
     public void setOpen(Date open) {
         this.open = open;
     }
