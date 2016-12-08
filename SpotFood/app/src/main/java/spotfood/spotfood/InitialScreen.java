@@ -23,6 +23,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,8 +46,8 @@ public class InitialScreen extends Activity {
     private Button mLoginButton;
     private TextView mSearchText;
     private ListView mListRestaurants;
-    private ArrayAdapter<String> mAdapter;
-    private ArrayList<String> mRestaurantsList;
+    private ArrayAdapter<Restaurant> mAdapter;
+    private ArrayList<Restaurant> mRestaurantsList;
     private ImageButton mAddRestaurantButton;
     private TextView mEmptyText;
     private boolean mStateLogin; //Used to check if it's login(true) or logout(false)
@@ -113,10 +114,45 @@ public class InitialScreen extends Activity {
         this.mAddRestaurantButton = (ImageButton) findViewById(R.id.addRestaurantButton);
 
         //Set mAdapter to one row of list view
-        this.mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mRestaurantsList);
+        this.mAdapter = new ArrayAdapter<Restaurant>(this, R.layout.linha, mRestaurantsList){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                //TextView tv = (TextView) convertView.findViewById(R.id.text1);
+                Restaurant u = mRestaurantsList.get(position);
+                ((TextView)convertView.findViewById(R.id.text1)).setText(u.getName());
+
+                int textColor = checkOpenRestaurant(u) ? R.color.green : R.color.red;
+                textView.setBackgroundColor(getResources().getColor(textColor));
+
+                return textView;
+            }
+        };
         this.mListRestaurants.setAdapter(this.mAdapter);
 
         this.checkIntentResult();
+    }
+
+    /** Check if a specific restaurant is open at the current time */
+    private boolean checkOpenRestaurant(Restaurant u){
+        Calendar c = Calendar.getInstance();
+        int currentTime = c.get(Calendar.HOUR_OF_DAY)*100+c.get(Calendar.MINUTE);
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        int restaurantOpen = u.getRestaurantHour(day).getOpen();
+        int restaurantClose = u.getRestaurantHour(day).getClose();
+
+        //in case open hours are lower than close hours and the current time is in that range
+        if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
+                && currentTime <= u.getRestaurantHour(day).getClose())) {
+            return true;
+        }
+                    /* in case open hours are higher than close hours and the current time is higher
+                     than open hours and lower than close hours*/
+        else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
+                || currentTime <= u.getRestaurantHour(day).getClose())) {
+            return true;
+        }
+        return false;
     }
 
     /** Search on firebase database all the restaurants that are open at the current time */
@@ -126,28 +162,15 @@ public class InitialScreen extends Activity {
 
         DatabaseReference userRef = this.mSpotFoodDataBaseReference.child("restaurants");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            Calendar c = Calendar.getInstance();
-            int currentTime = c.get(Calendar.HOUR_OF_DAY)*100+c.get(Calendar.MINUTE);
-            int day = c.get(Calendar.DAY_OF_WEEK);
-            int restaurantOpen, restaurantClose;
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Restaurant u = postSnapshot.getValue(Restaurant.class);
-                    restaurantOpen = u.getRestaurantHour(day).getOpen();
-                    restaurantClose = u.getRestaurantHour(day).getClose();
 
-                    //in case open hours are lower than close hours and the current time is in that range
-                    if(restaurantOpen < restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            && currentTime <= u.getRestaurantHour(day).getClose())) {
-                        mRestaurantsList.add(u.getName());
-                    }
-                    /* in case open hours are higher than close hours and the current time is higher
-                     than open hours and lower than close hours*/
-                    else if( restaurantOpen > restaurantClose && (currentTime >= u.getRestaurantHour(day).getOpen()
-                            || currentTime <= u.getRestaurantHour(day).getClose())) {
-                        mRestaurantsList.add(u.getName());
+                    //check if it's open
+                    if(checkOpenRestaurant(u)) {
+                        mRestaurantsList.add(u);
                     }
                 }
 
@@ -182,7 +205,7 @@ public class InitialScreen extends Activity {
                 //Cicle For that go through all the restaurants in firebase database
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Restaurant rest = postSnapshot.getValue(Restaurant.class);
-                    mRestaurantsList.add(rest.getName());
+                    mRestaurantsList.add(rest);
                 }
 
                 if(mRestaurantsList.size() == 0){
@@ -230,7 +253,7 @@ public class InitialScreen extends Activity {
                             //if (typeOfFood.toUpperCase().equals(nameOrTypeOfFood.toUpperCase())) {
                             if(typeOfFood.toUpperCase().contains(nameOrTypeOfFood.toUpperCase())){
                                 find = true;
-                                mRestaurantsList.add(rest.getName());
+                                mRestaurantsList.add(rest);
                                 break;
                             }
                         }
@@ -239,7 +262,7 @@ public class InitialScreen extends Activity {
                     //search by name if not find by type of food
                     if(!find){
                         if(rest.getName().toUpperCase().contains(nameOrTypeOfFood.toUpperCase())){
-                            mRestaurantsList.add(rest.getName());
+                            mRestaurantsList.add(rest);
                         }
                     }
                 }
