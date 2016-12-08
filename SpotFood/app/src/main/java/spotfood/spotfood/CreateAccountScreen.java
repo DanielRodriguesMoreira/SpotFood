@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateAccountScreen extends Activity {
+public class CreateAccountScreen extends Activity implements Constants{
 
     private DatabaseReference mSpotFoodDataBaseReference;
     private TextView mUsernameTextView;
@@ -98,6 +98,7 @@ public class CreateAccountScreen extends Activity {
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);
 
         Intent intent = new Intent(getApplication(), Details.class);
+        intent.putExtra(USERID, user.getIdUser());
         startActivity(intent);
         finish();
     }

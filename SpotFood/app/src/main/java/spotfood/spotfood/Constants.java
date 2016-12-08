@@ -35,6 +35,9 @@ public interface Constants {
     public static final String SUNDAY_OPEN_MINUTES = "SUNDAY_OPEN_MINUTES";
     public static final String SUNDAY_CLOSE_HOURS = "SUNDAY_CLOSE_HOURS";
     public static final String SUNDAY_CLOSE_MINUTES = "SUNDAY_CLOSE_MINUTES";
-
+    public static final String LOCATION = "LOCATION";
+    public static final String CONTACTS = "CONTACTS";
+    public static final String TYPE_OF_FOOD = "TYPE_OF_FOOD";
+    public static final String USERID = "USERID";
 
 }

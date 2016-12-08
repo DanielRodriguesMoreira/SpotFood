@@ -13,12 +13,12 @@
         android:orientation="horizontal"
         android:minHeight="75dp"
         android:background="#090b93">
-        <TextView
+        <EditText
             android:id="@+id/nameRestaurant"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="McDonalds"
+            android:text="New Restaurant"
             android:textColor="#FFFFFF"
             android:textSize="35dp"
             android:paddingStart="15dp"
@@ -575,6 +575,37 @@
                                         android:layout_centerHorizontal="true"/>
                                 </LinearLayout>
                             </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="bottom|right"
+                                android:orientation="horizontal"
+                                android:layout_weight="3"
+                                android:weightSum="1">
+                                <ImageButton
+                                    android:id="@+id/deleteButtonHours"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="84dp"
+                                    android:scaleX="0.72"
+                                    android:scaleY="0.72"
+                                    android:src="@mipmap/delete_button"
+                                    android:layout_marginBottom="25dp"
+                                    android:layout_gravity="right"
+                                    android:background="#FFFFFF">
+                                </ImageButton>
+                                <ImageButton
+                                    android:id="@+id/saveButtonHours"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="84dp"
+                                    android:scaleX="0.68"
+                                    android:scaleY="0.68"
+                                    android:src="@mipmap/save_button"
+                                    android:layout_marginEnd="6dp"
+                                    android:layout_marginBottom="25dp"
+                                    android:layout_gravity="right"
+                                    android:background="#FFFFFF">
+                                </ImageButton>
+                            </LinearLayout>
                         </LinearLayout>
                     </ScrollView>
                 </LinearLayout>
@@ -681,7 +712,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
-                                android:id="@+id/locationText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Location"
@@ -707,7 +737,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_margin="3dp">
                                 <EditText
-                                    android:id="@+id/editTextLocation"
+                                    android:id="@+id/locationText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:ems="1"
@@ -818,7 +848,6 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
-                                    android:id="@+id/typeOfFood"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:paddingTop="10dp"
@@ -834,7 +863,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <EditText
-                                    android:id="@+id/editTypeFood"
+                                    android:id="@+id/typeOfFood"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:paddingLeft="30dp"
@@ -929,7 +958,6 @@
                                 android:scaleX="1.8"
                                 android:scaleY="1.8"
                                 android:layout_gravity="center"
-                                android:onClick="clickAddOffer"
                                 android:background="#FFFFFF"
                                 android:layout_weight="0.21">
                             </ImageButton>

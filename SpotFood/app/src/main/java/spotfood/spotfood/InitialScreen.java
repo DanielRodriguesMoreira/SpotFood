@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class InitialScreen extends Activity implements Constants {
 
@@ -70,7 +71,7 @@ public class InitialScreen extends Activity implements Constants {
         this.inicializeVariables();
                                                         //Aqui temos que fazer isto ou procurar por todos se for um administrador(já temos essa função feita)
         //show open restaurants
-        this.searchOpenRestaurants();
+        //this.searchOpenRestaurants();
     }
 
     /** Inicialize all the variables */
@@ -289,6 +290,7 @@ public class InitialScreen extends Activity implements Constants {
 
                     if(rest.getName().equals(restaurantName)){
                         fillRestaurantInformationAndCallIntent(rest);
+                        break;
                     }
                 }
             }
@@ -304,6 +306,18 @@ public class InitialScreen extends Activity implements Constants {
         }
 
         String restaurantName = restaurant.getName();
+        String location = restaurant.getLocation();
+        String contacts = restaurant.getContacts();
+        List<String> typeOfFoodList = restaurant.getTypeOfFood();
+        String typeOfFood = "";
+        for(int i = 0; i < typeOfFoodList.size(); i++){
+            if(i == typeOfFoodList.size() - 1){
+                typeOfFood += typeOfFoodList.get(i);
+            }
+            else {
+                typeOfFood += typeOfFoodList.get(i) + ", ";
+            }
+        }
         int mondayOpenHours = restaurant.getMondayHour().getOpenHours();
         int mondayOpenMinutes = restaurant.getMondayHour().getOpenMinutes();
         int tuesdayOpenHours = restaurant.getTuesdayHour().getOpenHours();
@@ -336,6 +350,10 @@ public class InitialScreen extends Activity implements Constants {
         intent.putExtra(SATURDAY_OPEN_MINUTES, saturdayOpenMinutes);
         intent.putExtra(SUNDAY_OPEN_HOURS, sundayOpenHours);
         intent.putExtra(SUNDAY_OPEN_MINUTES, sundayOpenMinutes);
+        intent.putExtra(LOCATION, location);
+        intent.putExtra(CONTACTS, contacts);
+        intent.putExtra(TYPE_OF_FOOD, typeOfFood);
+
 
         startActivity(intent);
         finish();
