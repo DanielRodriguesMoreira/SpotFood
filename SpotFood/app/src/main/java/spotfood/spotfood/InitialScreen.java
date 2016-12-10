@@ -123,7 +123,7 @@ public class InitialScreen extends Activity implements Constants {
                     startActivity(intent);
                     finish();
                 } else if (mStateLogin == LOGOUT) {
-                    mStateLogin = LOGOUT;
+                    mStateLogin = LOGIN;
                     mAddRestaurantButton.setVisibility(View.INVISIBLE);
                     mLoginButton.setText("Login");
                 }
