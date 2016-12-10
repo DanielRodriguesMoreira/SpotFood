@@ -85,7 +85,9 @@ public class Details extends Activity implements Constants{
     private ImageButton mSaveOffersButton;
     private ImageButton mDeleteOffersButton;
     private ImageButton mAddMenuButton;
+    private ImageButton mDelMenuButton;
     private ImageButton mAddOffersButton;
+    private ImageButton mDelOffersButton;
     private String mUserID;
     private boolean mIsANewRestaurant;
     private String mRestaurantID;
@@ -131,8 +133,12 @@ public class Details extends Activity implements Constants{
         this.mDeleteOffersButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mAddMenuButton = (ImageButton)findViewById(R.id.addButtonMenu);
         this.mAddMenuButton.setOnClickListener(new addImageListener(new String("MENU")));
+        this.mDelMenuButton = (ImageButton)findViewById(R.id.delButtonMenu);
+        this.mDelMenuButton.setOnClickListener(new deleteImageListener(new String("MENU")));
         this.mAddOffersButton = (ImageButton)findViewById(R.id.addButtonOffers);
         this.mAddOffersButton.setOnClickListener(new addImageListener(new String("OFFERS")));
+        this.mDelOffersButton = (ImageButton)findViewById(R.id.delButtonOffers);
+        this.mDelOffersButton.setOnClickListener(new deleteImageListener(new String("OFFERS")));
         this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveConctactsButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveLocationButton.setOnClickListener(new saveRestaurantDetailsListener());
@@ -351,7 +357,9 @@ public class Details extends Activity implements Constants{
         this.mSaveOffersButton.setVisibility(View.INVISIBLE);
         this.mDeleteOffersButton.setVisibility(View.INVISIBLE);
         this.mAddMenuButton.setVisibility(View.INVISIBLE);
+        this.mDelMenuButton.setVisibility(View.INVISIBLE);
         this.mAddOffersButton.setVisibility(View.INVISIBLE);
+        this.mDelOffersButton.setVisibility(View.INVISIBLE);
         this.mRestaurantName.setEnabled(false);
         this.mHoursMondayOpen.setEnabled(false);
         this.mMinutesMondayOpen.setEnabled(false);
@@ -580,6 +588,23 @@ public class Details extends Activity implements Constants{
             }
             else{
                 startActivityForResult(intent, 20);
+            }
+        }
+    }
+
+    class deleteImageListener implements View.OnClickListener{
+
+        private String name = null;
+        public deleteImageListener(String name){this.name = name;}
+        @Override
+        public void onClick(View view) {
+            if(this.name.equals("OFFERS")){
+                mOffersBitmap = null;
+                mImageOffers.setImageResource(R.mipmap.no_offers);
+            }
+            else{
+                mMenuBitmap = null;
+                mImageMenu.setImageResource(R.mipmap.no_menu);
             }
         }
     }

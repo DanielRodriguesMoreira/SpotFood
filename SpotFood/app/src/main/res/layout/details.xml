@@ -819,6 +819,15 @@
                                     android:layout_weight="1"
                                     android:layout_gravity="top"/>
                                 <ImageButton
+                                    android:id="@+id/delButtonMenu"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@android:drawable/ic_delete"
+                                    android:layout_gravity="center"
+                                    android:background="#FFFFFF"
+                                    android:layout_weight="1">
+                                </ImageButton>
+                                <ImageButton
                                     android:id="@+id/addButtonMenu"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -943,6 +952,15 @@
                                 android:paddingBottom="10dp"
                                 android:layout_weight="1"
                                 android:layout_gravity="top"/>
+                            <ImageButton
+                                android:id="@+id/delButtonOffers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@android:drawable/ic_delete"
+                                android:layout_gravity="center"
+                                android:background="#FFFFFF"
+                                android:layout_weight="1">
+                            </ImageButton>
                             <ImageButton
                                 android:id="@+id/addButtonOffers"
                                 android:layout_width="wrap_content"

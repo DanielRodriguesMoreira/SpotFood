@@ -25,10 +25,10 @@ public class Hour {
     }
 
     public Hour(int openH, int openM, int closeH, int closeM) {
-        this.openHour = openH;
-        this.openMinutes = openM;
-        this.closeHour = closeH;
-        this.closeMinutes = closeM;
+        this.setOpenHour(openH);
+        this.setOpenMinutes(openM);
+        this.setCloseHour(closeH);
+        this.setCloseMinutes(closeM);
     }
 
     public int getOpenHour() {
@@ -36,7 +36,12 @@ public class Hour {
     }
 
     public void setOpenHour(int openHour) {
-        this.openHour = openHour;
+        if(openHour < 0 || openHour > 24){
+            this.openHour = 0;
+        }
+        else {
+            this.openHour = openHour;
+        }
     }
 
     public int getOpenMinutes() {
@@ -44,7 +49,13 @@ public class Hour {
     }
 
     public void setOpenMinutes(int openMinutes) {
-        this.openMinutes = openMinutes;
+        if(openMinutes < 0 || openMinutes > 59){
+            this.openMinutes = 0;
+        }
+        else{
+            this.openMinutes = openMinutes;
+        }
+
     }
 
     public int getCloseHour() {
@@ -52,7 +63,12 @@ public class Hour {
     }
 
     public void setCloseHour(int closeHour) {
-        this.closeHour = closeHour;
+        if(closeHour < 0 || closeHour > 24){
+            this.closeHour = 0;
+        }
+        else {
+            this.closeHour = closeHour;
+        }
     }
 
     public int getCloseMinutes() {
@@ -60,6 +76,11 @@ public class Hour {
     }
 
     public void setCloseMinutes(int closeMinutes) {
-        this.closeMinutes = closeMinutes;
+        if(closeMinutes < 0 || closeMinutes > 59){
+            this.closeMinutes = 0;
+        }
+        else {
+            this.closeMinutes = closeMinutes;
+        }
     }
 }
