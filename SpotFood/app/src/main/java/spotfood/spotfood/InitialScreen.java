@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.poili.spotfood.R;
 import com.google.firebase.database.DataSnapshot;
@@ -129,6 +130,16 @@ public class InitialScreen extends Activity implements Constants {
             }
         });
         this.mAddRestaurantButton = (ImageButton) findViewById(R.id.addRestaurantButton);
+        this.mAddRestaurantButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication(), Details.class);
+                intent.putExtra(USER_ID, "0");
+                intent.putExtra(NEWRESTAURANT, true);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         //Set mAdapter to one row of list view
         this.mAdapter = new ArrayAdapter<Restaurant>(this, android.R.layout.simple_list_item_1, mRestaurantsList) {
@@ -310,6 +321,8 @@ public class InitialScreen extends Activity implements Constants {
         }
 
         String restaurantName = restaurant.getName();
+        String restaurantID = restaurant.getIdRestaurant();
+        String restaurantUserID = restaurant.getIdUser();
         String location = restaurant.getLocation();
         String contacts = restaurant.getContacts();
         List<String> typeOfFoodList = restaurant.getTypeOfFood();
@@ -354,8 +367,19 @@ public class InitialScreen extends Activity implements Constants {
         int sundayCloseMinutes = restaurant.getSundayHour().getCloseMinutes();
 
         Intent intent = new Intent(getApplication(), Details.class);
-        intent.putExtra(ONLYTOSHOW, true);
+
+        if(mStateLogin == LOGOUT){
+            //if enters here means that the user it's an ADMIN
+            //and he can edit the restaurant details
+            intent.putExtra(ONLYTOSHOW, false);
+        }
+        else{
+            intent.putExtra(ONLYTOSHOW, true);
+        }
+
+        intent.putExtra(RESTAURANT_ID, restaurantID);
         intent.putExtra(RESTAURANT_NAME, restaurantName);
+        intent.putExtra(USER_ID, restaurantUserID);
         intent.putExtra(MONDAY_OPEN_HOURS, mondayOpenHours);
         intent.putExtra(MONDAY_OPEN_MINUTES, mondayOpenMinutes);
         intent.putExtra(TUESDAY_OPEN_HOURS, tuesdayOpenHours);
@@ -388,7 +412,6 @@ public class InitialScreen extends Activity implements Constants {
         intent.putExtra(CONTACTS, contacts);
         intent.putExtra(TYPE_OF_FOOD, typeOfFood);
 
-
         startActivity(intent);
         finish();
     }
@@ -410,8 +433,8 @@ public class InitialScreen extends Activity implements Constants {
      */
     private void checkIntentResult() {
         Intent intent = getIntent();
-        boolean userRole = intent.getBooleanExtra("ADMIN", false);
-        if (userRole) {
+        boolean userRoleAdmin = intent.getBooleanExtra("ADMIN", false);
+        if (userRoleAdmin) {
             this.mStateLogin = LOGOUT;
             this.mLoginButton.setText("Logout");
             this.mAddRestaurantButton.setVisibility(View.VISIBLE);
