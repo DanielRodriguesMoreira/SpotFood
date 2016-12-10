@@ -4,14 +4,22 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -21,6 +29,7 @@ import com.example.poili.spotfood.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -63,6 +72,8 @@ public class Details extends Activity implements Constants{
     private TextView mContactsText;
     private TextView mLocationText;
     private TextView mTypeOfFoodText;
+    private ImageView mImageMenu;
+    private ImageView mImageOffers;
     private ImageButton mSaveHoursButton;
     private ImageButton mDeleteHoursButton;
     private ImageButton mSaveConctactsButton;
@@ -74,9 +85,12 @@ public class Details extends Activity implements Constants{
     private ImageButton mSaveOffersButton;
     private ImageButton mDeleteOffersButton;
     private ImageButton mAddMenuButton;
+    private ImageButton mAddOffersButton;
     private String mUserID;
     private boolean mIsANewRestaurant;
     private String mRestaurantID;
+    private Bitmap mMenuBitmap;
+    private Bitmap mOffersBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +130,18 @@ public class Details extends Activity implements Constants{
         this.mDeleteOffersButton = (ImageButton)findViewById(R.id.deleteButtonOffers);
         this.mDeleteOffersButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mAddMenuButton = (ImageButton)findViewById(R.id.addButtonMenu);
+        this.mAddMenuButton.setOnClickListener(new addImageListener(new String("MENU")));
+        this.mAddOffersButton = (ImageButton)findViewById(R.id.addButtonOffers);
+        this.mAddOffersButton.setOnClickListener(new addImageListener(new String("OFFERS")));
         this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveConctactsButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveLocationButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveMenuButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveOffersButton.setOnClickListener(new saveRestaurantDetailsListener());
+        this.mImageMenu = (ImageView)findViewById(R.id.imageMenu);
+        this.mImageOffers = (ImageView)findViewById(R.id.imageOffers);
+        this.mMenuBitmap = null;
+        this.mOffersBitmap = null;
         this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -330,6 +351,7 @@ public class Details extends Activity implements Constants{
         this.mSaveOffersButton.setVisibility(View.INVISIBLE);
         this.mDeleteOffersButton.setVisibility(View.INVISIBLE);
         this.mAddMenuButton.setVisibility(View.INVISIBLE);
+        this.mAddOffersButton.setVisibility(View.INVISIBLE);
         this.mRestaurantName.setEnabled(false);
         this.mHoursMondayOpen.setEnabled(false);
         this.mMinutesMondayOpen.setEnabled(false);
@@ -398,6 +420,20 @@ public class Details extends Activity implements Constants{
         this.mLocationText.setText(intent.getStringExtra(LOCATION));
         this.mContactsText.setText(intent.getStringExtra(CONTACTS));
         this.mTypeOfFoodText.setText(intent.getStringExtra(TYPE_OF_FOOD));
+
+        String menu = intent.getStringExtra(MENU);
+        if(menu != null && !menu.isEmpty()) {
+            byte[] decodedString = Base64.decode(menu, Base64.DEFAULT);
+            this.mMenuBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            this.mImageMenu.setImageBitmap(this.mMenuBitmap);
+        }
+
+        String offers = intent.getStringExtra(OFFERS);
+        if(offers != null && !offers.isEmpty()) {
+            byte[] decodedString = Base64.decode(offers, Base64.DEFAULT);
+            this.mOffersBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            this.mImageOffers.setImageBitmap(this.mOffersBitmap);
+        }
     }
 
     class saveRestaurantDetailsListener implements View.OnClickListener {
@@ -419,6 +455,11 @@ public class Details extends Activity implements Constants{
                 restaurantID = mRestaurantID;
             }
 
+            //
+            String encodeMenu = this.encodeBitmap(mMenuBitmap);
+            String encodeOffers = this.encodeBitmap(mOffersBitmap);
+            //
+
             Restaurant r = new Restaurant(
                     restaurantID,
                     mUserID,
@@ -439,7 +480,9 @@ public class Details extends Activity implements Constants{
                             mHoursSundayClose.getValue(), mMinutesSundayClose.getValue()),
                     mContactsText.getText().toString(),
                     mLocationText.getText().toString(),
-                    typeOfFoodList
+                    typeOfFoodList,
+                    encodeMenu,
+                    encodeOffers
             );
 
             mSpotFoodDataBaseReference.child("restaurants").
@@ -449,6 +492,22 @@ public class Details extends Activity implements Constants{
                     "Restaurant details successfully saved!", Toast.LENGTH_LONG).show();
 
             mIsANewRestaurant = false;
+        }
+
+        private String encodeBitmap(Bitmap bitmap) {
+
+            ByteArrayOutputStream bYtE = new ByteArrayOutputStream();
+            byte[] byteArray;
+            String encodeString = null;
+
+            if(bitmap != null){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bYtE);
+                bitmap.recycle();
+                byteArray = bYtE.toByteArray();
+                encodeString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            }
+
+            return encodeString;
         }
     }
 
@@ -502,6 +561,60 @@ public class Details extends Activity implements Constants{
                         }
                     });
             return builder.create();
+        }
+    }
+
+    class addImageListener implements View.OnClickListener{
+
+        private String name = null;
+
+        public addImageListener(String name){
+            this.name = name;
+        }
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            if(this.name.equals("MENU")) {
+                startActivityForResult(intent, 10);
+            }
+            else{
+                startActivityForResult(intent, 20);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 10 && data != null && data.getData() != null){
+            Uri uri = data.getData();
+            if(uri != null){
+                Cursor cursor = getContentResolver().query(uri,
+                        new String[] {android.provider.MediaStore.Images.ImageColumns.DATA},
+                        null, null, null);
+                cursor.moveToFirst();
+                final String imageFilePath = cursor.getString(0);
+                cursor.close();
+
+                this.mMenuBitmap = BitmapFactory.decodeFile(imageFilePath);
+                this.mImageMenu.setImageBitmap(this.mMenuBitmap);
+            }
+        }
+        if(requestCode == 20 && data != null && data.getData() != null){
+            Uri uri = data.getData();
+            if(uri != null){
+                Cursor cursor = getContentResolver().query(uri,
+                        new String[] {android.provider.MediaStore.Images.ImageColumns.DATA},
+                        null, null, null);
+                cursor.moveToFirst();
+                final String imageFilePath = cursor.getString(0);
+                cursor.close();
+
+                this.mOffersBitmap = BitmapFactory.decodeFile(imageFilePath);
+                this.mImageOffers.setImageBitmap(this.mOffersBitmap);
+            }
         }
     }
 }

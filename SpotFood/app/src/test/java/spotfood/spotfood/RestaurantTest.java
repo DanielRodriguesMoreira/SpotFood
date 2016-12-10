@@ -29,7 +29,7 @@ public class RestaurantTest
         sundayHour = new Hour(12, 00, 15, 00);
 
         testingRestaurant = new Restaurant("1", "1", "RestauranteTeste", mondayHour, tuesdayHour, wednesdayHour, thrusdayHour, fridayHour,
-                saturdayHour, sundayHour, "231527802", "Rua de trás", typeOfFood);
+                saturdayHour, sundayHour, "231527802", "Rua de trás", typeOfFood, null, null);
         dayToFind = 3;
     }
 

@@ -325,6 +325,8 @@ public class InitialScreen extends Activity implements Constants {
         String restaurantUserID = restaurant.getIdUser();
         String location = restaurant.getLocation();
         String contacts = restaurant.getContacts();
+        String menu = restaurant.getMenu();
+        String offers = restaurant.getOffers();
         List<String> typeOfFoodList = restaurant.getTypeOfFood();
         String typeOfFood = "";
 
@@ -411,6 +413,8 @@ public class InitialScreen extends Activity implements Constants {
         intent.putExtra(LOCATION, location);
         intent.putExtra(CONTACTS, contacts);
         intent.putExtra(TYPE_OF_FOOD, typeOfFood);
+        intent.putExtra(MENU, menu);
+        intent.putExtra(OFFERS, offers);
 
         startActivity(intent);
         finish();

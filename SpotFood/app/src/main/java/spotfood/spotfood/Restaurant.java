@@ -27,7 +27,8 @@ public class Restaurant {
     private String contacts;
     private String location;
     private List<String> typeOfFood;
-    //TODO: menu and offers need implementation
+    private String menu;
+    private String offers;
 
     public Restaurant() {
 
@@ -35,7 +36,8 @@ public class Restaurant {
 
     public Restaurant(String idRestaurant, String idUser, String name, Hour mondayHour, Hour tuesdayHour,
                       Hour wednesdayHour, Hour thursdayHour, Hour fridayHour, Hour saturdayHour,
-                      Hour sundayHour, String contacts, String location, List<String> typeOfFood) {
+                      Hour sundayHour, String contacts, String location, List<String> typeOfFood,
+                      String menu, String offers) {
         this.idRestaurant = idRestaurant;
         this.idUser = idUser;
         this.name = name;
@@ -49,6 +51,8 @@ public class Restaurant {
         this.contacts = contacts;
         this.location = location;
         this.typeOfFood = typeOfFood;
+        this.menu = menu;
+        this.offers = offers;
     }
 
     public String getLocation() {
@@ -173,4 +177,8 @@ public class Restaurant {
                 return null;
         }
     }
+
+    public String getMenu(){ return menu; }
+
+    public String getOffers(){ return this.offers; }
 }
