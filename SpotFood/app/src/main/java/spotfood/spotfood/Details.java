@@ -1,6 +1,10 @@
 package spotfood.spotfood;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -98,14 +102,19 @@ public class Details extends Activity implements Constants{
         this.mSaveHoursButton = (ImageButton) findViewById(R.id.saveButtonHours);
         this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mDeleteHoursButton = (ImageButton) findViewById(R.id.deleteButton);
+        this.mDeleteHoursButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mSaveConctactsButton = (ImageButton)findViewById(R.id.saveButtonContacts);
         this.mDeleteContactsButton = (ImageButton)findViewById(R.id.deleteButtonContacts);
+        this.mDeleteContactsButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mSaveLocationButton = (ImageButton)findViewById(R.id.saveButtonLocation);
         this.mDeleteLocationButton = (ImageButton)findViewById(R.id.deleteButtonLocation);
+        this.mDeleteLocationButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mSaveMenuButton = (ImageButton)findViewById(R.id.saveButtonMenu);
         this.mDeleteMenuButton = (ImageButton)findViewById(R.id.deleteButtonMenu);
+        this.mDeleteMenuButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mSaveOffersButton = (ImageButton)findViewById(R.id.saveButtonOffers);
         this.mDeleteOffersButton = (ImageButton)findViewById(R.id.deleteButtonOffers);
+        this.mDeleteOffersButton.setOnClickListener(new deleteRestaurantDetailsListener());
         this.mAddMenuButton = (ImageButton)findViewById(R.id.addButtonMenu);
         this.mSaveHoursButton.setOnClickListener(new saveRestaurantDetailsListener());
         this.mSaveConctactsButton.setOnClickListener(new saveRestaurantDetailsListener());
@@ -306,19 +315,6 @@ public class Details extends Activity implements Constants{
         this.mUserID = intent.getStringExtra(USER_ID);
         this.mRestaurantID = intent.getStringExtra(RESTAURANT_ID);
         this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
-
-        /*
-        if(onlyToShow){
-            this.disableComponents();
-            this.fillDetails(intent);
-        }
-        else{
-            this.mUserID = intent.getStringExtra(USER_ID);
-            this.mRestaurantID = intent.getStringExtra(RESTAURANT_ID);
-            this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
-            this.fillDetails(intent);
-        }
-        */
     }
 
     private void disableComponents() {
@@ -451,6 +447,61 @@ public class Details extends Activity implements Constants{
 
             Toast.makeText(getApplicationContext(),
                     "Restaurant details successfully saved!", Toast.LENGTH_LONG).show();
+
+            mIsANewRestaurant = false;
+        }
+    }
+
+    class deleteRestaurantDetailsListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            confirmationDeleteDialog confirmationDialog = new confirmationDeleteDialog();
+            confirmationDialog.show(getFragmentManager(), "TAG");
+        }
+    }
+
+    /**
+     * Fragment Dialog to show internet connection error
+     */
+    class confirmationDeleteDialog extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Delete restaurant")
+                    .setMessage("Are you sure you want to delete this restaurant?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if(mIsANewRestaurant){
+                                //Delete only account because the restaurant isn't created
+                                mSpotFoodDataBaseReference.child("users").child(mUserID).removeValue();
+                            }
+                            else{
+                                mSpotFoodDataBaseReference.child("restaurants").child(mRestaurantID)
+                                        .removeValue();
+                                mSpotFoodDataBaseReference.child("users").child(mUserID)
+                                        .removeValue();
+                            }
+
+                            Toast.makeText(getApplicationContext(),
+                                    "Account and restaurant were deleted successfully",
+                                    Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(getApplication(), InitialScreen.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //Do nothing
+                        }
+                    });
+            return builder.create();
         }
     }
 }

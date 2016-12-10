@@ -416,7 +416,6 @@ public class InitialScreen extends Activity implements Constants {
         finish();
     }
 
-
     /**
      * Check if there is internet connection on android phone
      */
@@ -441,6 +440,9 @@ public class InitialScreen extends Activity implements Constants {
         }
     }
 
+    /**
+     * this method it's called when someone clicks on android back button
+     */
     @Override
     public void onBackPressed() {
         finish();
