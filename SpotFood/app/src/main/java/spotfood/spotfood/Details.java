@@ -2,6 +2,7 @@ package spotfood.spotfood;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -89,6 +90,7 @@ public class Details extends Activity implements Constants{
         mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
         this.mIsANewRestaurant = false;
         this.mRestaurantName = (TextView)findViewById(R.id.nameRestaurant);
+        this.mRestaurantName.setHintTextColor(Color.WHITE);
         this.mContactsText = (TextView)findViewById(R.id.editTextContacts);
         this.mTypeOfFoodText = (TextView)findViewById(R.id.typeOfFood);
         this.mLocationText = (TextView)findViewById(R.id.locationText);
@@ -295,6 +297,17 @@ public class Details extends Activity implements Constants{
     private void checkIntentResult() {
         Intent intent = getIntent();
         boolean onlyToShow = intent.getBooleanExtra(ONLYTOSHOW, false);
+
+        if(onlyToShow){
+            this.disableComponents();
+        }
+
+        this.fillDetails(intent);
+        this.mUserID = intent.getStringExtra(USER_ID);
+        this.mRestaurantID = intent.getStringExtra(RESTAURANT_ID);
+        this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
+
+        /*
         if(onlyToShow){
             this.disableComponents();
             this.fillDetails(intent);
@@ -305,6 +318,7 @@ public class Details extends Activity implements Constants{
             this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
             this.fillDetails(intent);
         }
+        */
     }
 
     private void disableComponents() {
@@ -395,7 +409,7 @@ public class Details extends Activity implements Constants{
         public void onClick(View view) {
 
             List<String> typeOfFoodList = new ArrayList<String>();
-            StringTokenizer tokenizer = new StringTokenizer(mTypeOfFoodText.getText().toString(), ",; ", false);
+            StringTokenizer tokenizer = new StringTokenizer(mTypeOfFoodText.getText().toString(), ",;", false);
             String restaurantID;
             while(tokenizer.hasMoreTokens()){
                 String token = tokenizer.nextToken();
@@ -432,7 +446,11 @@ public class Details extends Activity implements Constants{
                     typeOfFoodList
             );
 
-            mSpotFoodDataBaseReference.child("restaurants").child(r.getIdRestaurant()).setValue(r);
+            mSpotFoodDataBaseReference.child("restaurants").
+                    child(r.getIdRestaurant()).setValue(r);
+
+            Toast.makeText(getApplicationContext(),
+                    "Restaurant details successfully saved!", Toast.LENGTH_LONG).show();
         }
     }
 }
