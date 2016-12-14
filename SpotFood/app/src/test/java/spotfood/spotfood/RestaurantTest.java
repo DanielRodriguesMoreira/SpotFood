@@ -15,7 +15,7 @@ public class RestaurantTest
     int dayToFind;
     Hour mondayHour, tuesdayHour, wednesdayHour, thrusdayHour, fridayHour, saturdayHour, sundayHour;
 
-    /*@Before
+    @Before
     public void setUp() throws Exception
     {
         List<String> typeOfFood = null;
@@ -36,6 +36,11 @@ public class RestaurantTest
     @Test
     public void setRestaurantName() throws Exception {
         String name = null;
+        testingRestaurant.setName(name);
+
+        assertEquals("Default Name",testingRestaurant.getName());
+
+        name = "";
         testingRestaurant.setName(name);
 
         assertEquals("Default Name",testingRestaurant.getName());
@@ -158,5 +163,5 @@ public class RestaurantTest
 
         assertNull(offers, testingRestaurant.getOffers());
     }
-    */
+
 }

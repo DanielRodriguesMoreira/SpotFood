@@ -161,6 +161,14 @@ public class Details extends Activity implements Constants{
         this.mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //Save restaurant details on Firebase with the Logout button
+                Intent intentResult = getIntent();
+                boolean onlyToShow = intentResult.getBooleanExtra(ONLYTOSHOW, false);
+                if(!onlyToShow){
+                    mSaveConctactsButton.callOnClick();
+                }
+
                 Intent intent = new Intent(getApplication(), InitialScreen.class);
                 startActivity(intent);
                 finish();
@@ -328,6 +336,14 @@ public class Details extends Activity implements Constants{
 
     @Override
     public void onBackPressed() {
+
+        //Save restaurant details on Firebase with the Android back button
+        Intent intentResult = getIntent();
+        boolean onlyToShow = intentResult.getBooleanExtra(ONLYTOSHOW, false);
+        if(!onlyToShow){
+            this.mSaveConctactsButton.callOnClick();
+        }
+
         Intent intent = new Intent(getApplication(), InitialScreen.class);
         startActivity(intent);
         finish();
@@ -514,6 +530,7 @@ public class Details extends Activity implements Constants{
                     "Restaurant details successfully saved!", Toast.LENGTH_LONG).show();
 
             mIsANewRestaurant = false;
+            mRestaurantID = r.getIdRestaurant();
         }
 
         private String encodeBitmap(Bitmap bitmap) {

@@ -117,6 +117,13 @@ public class CreateAccountScreen extends Activity implements Constants{
 
     /** Create Account on firebase database */
     private void createAccount(String username, String password, String restaurant) {
+
+        if(restaurant.isEmpty() || restaurant.equals(null)) {
+            Toast.makeText(getApplicationContext(),
+                    "Can not connect to Firebase Databse!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         mUserID = UUID.randomUUID().toString();
         User user = new User(mUserID, username, password, sRoleRM);
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);

@@ -41,7 +41,8 @@ public class Restaurant {
                       String menu, String offers) {
         this.idRestaurant = idRestaurant;
         this.idUser = idUser;
-        this.name = name;
+        //this.name = name;
+        this.setName(name);
         this.mondayHour = mondayHour;
         this.tuesdayHour = tuesdayHour;
         this.wednesdayHour = wednesdayHour;
@@ -57,7 +58,7 @@ public class Restaurant {
     }
 
     public void setName(String name) {
-        if(name instanceof String)
+        if(name instanceof String && !name.isEmpty())
             this.name = name;
         else
             this.name = "Default Name";
