@@ -45,8 +45,9 @@
         android:layout_gravity="center"
         android:background="#FFFFFF">
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
             <MultiAutoCompleteTextView
                 android:id="@+id/searchText"
                 android:layout_width="wrap_content"
@@ -70,7 +71,7 @@
                 android:ems="6"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="right">
 
@@ -81,7 +82,9 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/add_button"
                 android:background="#FFFFFF"
-                android:visibility="invisible">
+                android:visibility="invisible"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp">
             </ImageButton>
 
             <ImageButton
@@ -100,16 +103,19 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:orientation="vertical">
+
         <ListView
             android:id="@+id/listRestaurants"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF">
         </ListView>
+
         <TextView
             android:id="@android:id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:text="There are no restaurants open at this time"
             android:gravity="center_vertical|center_horizontal"
             android:textSize="18sp" />
