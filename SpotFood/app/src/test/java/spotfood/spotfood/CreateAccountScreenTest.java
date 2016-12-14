@@ -12,7 +12,7 @@ public class CreateAccountScreenTest {
 
     CreateAccountScreen createAccountScreen;
 
-    @Before
+    /*@Before
     public void setUp() throws Exception {
         createAccountScreen = new CreateAccountScreen();
         createAccountScreen.mUsernamesList = new ArrayList<>();
@@ -93,5 +93,5 @@ public class CreateAccountScreenTest {
         createAccountScreen.mUsernamesList.add(daniel);
         assertTrue(createAccountScreen.checkIfUsernameAlreadyExists(daniel));
     }
-
+*/
 }

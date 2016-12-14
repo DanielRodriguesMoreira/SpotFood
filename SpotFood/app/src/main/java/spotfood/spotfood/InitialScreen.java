@@ -161,22 +161,22 @@ public class InitialScreen extends Activity implements Constants {
     /**
      * Check if a specific restaurant is open at the current time
      */
-    private boolean checkOpenRestaurant(Restaurant u) {
-        Calendar c = Calendar.getInstance();
-        int currentTime = c.get(Calendar.HOUR_OF_DAY) * 100 + c.get(Calendar.MINUTE);
-        int day = c.get(Calendar.DAY_OF_WEEK);
-        int restaurantOpen = u.getRestaurantHour(day).getOpenHour() * 100 + u.getRestaurantHour(day).getOpenMinutes();
-        int restaurantClose = u.getRestaurantHour(day).getCloseHour() * 100 + u.getRestaurantHour(day).getCloseMinutes();
+    private boolean checkOpenRestaurant(Restaurant rest) {
+        Calendar cal = Calendar.getInstance();
+        int currentTime = cal.get(Calendar.HOUR_OF_DAY) * 100 + cal.get(Calendar.MINUTE);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        int restaurantOpeningTime = rest.getRestaurantHour(day).getOpenHour() * 100 + rest.getRestaurantHour(day).getOpenMinutes();
+        int restaurantClosedTime = rest.getRestaurantHour(day).getCloseHour() * 100 + rest.getRestaurantHour(day).getCloseMinutes();
 
         //in case open hours are lower than close hours and the current time is in that range
-        if (restaurantOpen < restaurantClose && (currentTime >= restaurantOpen
-                && currentTime <= restaurantClose)) {
+        if (restaurantOpeningTime < restaurantClosedTime && (currentTime >= restaurantOpeningTime
+                && currentTime <= restaurantClosedTime)) {
             return true;
         }
                     /* in case open hours are higher than close hours and the current time is higher
                      than open hours and lower than close hours*/
-        else if (restaurantOpen > restaurantClose && (currentTime >= restaurantOpen
-                || currentTime <= restaurantClose)) {
+        else if (restaurantOpeningTime > restaurantClosedTime && (currentTime >= restaurantOpeningTime
+                || currentTime <= restaurantClosedTime)) {
             return true;
         }
         return false;
@@ -195,11 +195,11 @@ public class InitialScreen extends Activity implements Constants {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant u = postSnapshot.getValue(Restaurant.class);
+                    Restaurant rest = postSnapshot.getValue(Restaurant.class);
 
                     //check if it's open
-                    if (checkOpenRestaurant(u)) {
-                        mRestaurantsList.add(u);
+                    if (checkOpenRestaurant(rest)) {
+                        mRestaurantsList.add(rest);
                     }
                 }
 
@@ -429,7 +429,6 @@ public class InitialScreen extends Activity implements Constants {
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
     }
 
     /**

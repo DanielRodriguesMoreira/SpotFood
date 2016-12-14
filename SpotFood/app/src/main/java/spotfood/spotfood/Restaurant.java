@@ -56,106 +56,61 @@ public class Restaurant {
         this.offers = offers;
     }
 
-    public String getLocation() {
-        return location;
+    public void setName(String name) {
+        if(name instanceof String)
+            this.name = name;
+        else
+            this.name = "Default Name";
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public String getLocation() {
+        return location;
     }
 
     public String getIdRestaurant() {
         return idRestaurant;
     }
 
-    public void setIdRestaurant(String idRestaurant) {
-        this.idRestaurant = idRestaurant;
-    }
-
     public String getIdUser() { return idUser; }
-
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
-    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Hour getMondayHour() {
         return mondayHour;
     }
 
-    public void setMondayHour(Hour mondayHour) {
-        this.mondayHour = mondayHour;
-    }
-
     public Hour getTuesdayHour() {
         return tuesdayHour;
-    }
-
-    public void setTuesdayHour(Hour tuesdayHour) {
-        this.tuesdayHour = tuesdayHour;
     }
 
     public Hour getWednesdayHour() {
         return wednesdayHour;
     }
 
-    public void setWednesdayHour(Hour wednesdayHour) {
-        this.wednesdayHour = wednesdayHour;
-    }
-
     public Hour getThursdayHour() {
         return thursdayHour;
-    }
-
-    public void setThursdayHour(Hour thursdayHour) {
-        this.thursdayHour = thursdayHour;
     }
 
     public Hour getFridayHour() {
         return fridayHour;
     }
 
-    public void setFridayHour(Hour fridayHour) {
-        this.fridayHour = fridayHour;
-    }
-
     public Hour getSaturdayHour() {
         return saturdayHour;
-    }
-
-    public void setSaturdayHour(Hour saturdayHour) {
-        this.saturdayHour = saturdayHour;
     }
 
     public Hour getSundayHour() {
         return sundayHour;
     }
 
-    public void setSundayHour(Hour sundayHour) {
-        this.sundayHour = sundayHour;
-    }
-
     public String getContacts() {
         return contacts;
     }
 
-    public void setContacts(String contacts) {
-        this.contacts = contacts;
-    }
-
     public List<String> getTypeOfFood() {
         return typeOfFood;
-    }
-
-    public void setTypeOfFood(List<String> typeOfFood) {
-        this.typeOfFood = typeOfFood;
     }
 
     public Hour getRestaurantHour(int day){
