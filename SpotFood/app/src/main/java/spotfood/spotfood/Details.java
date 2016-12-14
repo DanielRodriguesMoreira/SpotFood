@@ -1,17 +1,26 @@
+/*
+ * SpotFood - 2016
+ *
+ * Authors:
+ *          -> Daniel Moreira   nº21240321
+ *          -> Hugo Santos      nº21220702
+ *          -> Tiago Santos     nº21230530
+ *          -> Carlos Zambrano  nº 21260582
+ *          -> Selman Ay        nº21260599
+ */
+
 package spotfood.spotfood;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -38,7 +47,7 @@ import java.util.UUID;
 public class Details extends Activity implements Constants{
 
     private DatabaseReference mSpotFoodDataBaseReference;
-    private TabHost tabHost;
+    private TabHost mTabHost;
     private NumberPicker mHoursMondayOpen;
     private NumberPicker mMinutesMondayOpen;
     private NumberPicker mHoursMondayClose;
@@ -105,6 +114,7 @@ public class Details extends Activity implements Constants{
         this.checkIntentResult();
     }
 
+    /** Inicialize all the variables  */
     private void inicializeVariables() {
 
         mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
@@ -156,38 +166,38 @@ public class Details extends Activity implements Constants{
                 finish();
             }
         });
-        tabHost = (TabHost)findViewById(R.id.tabHost);
-        tabHost.setup();
+        mTabHost = (TabHost)findViewById(R.id.tabHost);
+        mTabHost.setup();
 
         //Tab 1
-        TabHost.TabSpec spec = tabHost.newTabSpec("Tab One");
+        TabHost.TabSpec spec = mTabHost.newTabSpec("Tab One");
         spec.setContent(R.id.openHours);
         spec.setIndicator("", getResources().getDrawable(R.mipmap.open_hours_icon));
-        tabHost.addTab(spec);
+        mTabHost.addTab(spec);
 
         //Tab 2
-        spec = tabHost.newTabSpec("Tab Two");
+        spec = mTabHost.newTabSpec("Tab Two");
         spec.setContent(R.id.contacts);
         spec.setIndicator("", getResources().getDrawable(R.mipmap.contacts_icon));
-        tabHost.addTab(spec);
+        mTabHost.addTab(spec);
 
         //Tab 3
-        spec = tabHost.newTabSpec("Tab Three");
+        spec = mTabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.location);
         spec.setIndicator("", getResources().getDrawable(R.mipmap.location_icon));
-        tabHost.addTab(spec);
+        mTabHost.addTab(spec);
 
         //Tab 4
-        spec = tabHost.newTabSpec("Tab Three");
+        spec = mTabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.menu);
         spec.setIndicator("", getResources().getDrawable(R.mipmap.menu_icon));
-        tabHost.addTab(spec);
+        mTabHost.addTab(spec);
 
         //Tab 5
-        spec = tabHost.newTabSpec("Tab Three");
+        spec = mTabHost.newTabSpec("Tab Three");
         spec.setContent(R.id.offers);
         spec.setIndicator("", getResources().getDrawable(R.mipmap.offers_icon));
-        tabHost.addTab(spec);
+        mTabHost.addTab(spec);
 
         mHoursMondayOpen = (NumberPicker)findViewById(R.id.hoursMondayOpen);
         mMinutesMondayOpen = (NumberPicker)findViewById(R.id.minutesMondayOpen);
@@ -316,12 +326,6 @@ public class Details extends Activity implements Constants{
         mMinutesSundayClose.setFormatter(new MyTwoDigitFormatter());
     }
 
-    class MyTwoDigitFormatter implements NumberPicker.Formatter {
-        public String format(int value) {
-            return String.format("%02d", value);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplication(), InitialScreen.class);
@@ -344,6 +348,7 @@ public class Details extends Activity implements Constants{
         this.mIsANewRestaurant = intent.getBooleanExtra(NEWRESTAURANT, false);
     }
 
+    /** Put all components enable = false because it's only to show information */
     private void disableComponents() {
         this.mLogoutButton.setVisibility(View.INVISIBLE);
         this.mSaveHoursButton.setVisibility(View.INVISIBLE);
@@ -394,6 +399,7 @@ public class Details extends Activity implements Constants{
         this.mTypeOfFoodText.setEnabled(false);
     }
 
+    /** Fill all components whit the information passed by intent to show the restaurant details */
     private void fillDetails(Intent intent){
 
         this.mRestaurantName.setText(intent.getStringExtra(RESTAURANT_NAME));
@@ -444,6 +450,14 @@ public class Details extends Activity implements Constants{
         }
     }
 
+    /** Nested class to format the number pickers */
+    class MyTwoDigitFormatter implements NumberPicker.Formatter {
+        public String format(int value) {
+            return String.format("%02d", value);
+        }
+    }
+
+    /** Nested class that implements a OnClickListener,serves for save restaurant details on Firebase*/
     class saveRestaurantDetailsListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -519,6 +533,7 @@ public class Details extends Activity implements Constants{
         }
     }
 
+    /** Nested class that implements a OnClickListener,serves for delete restaurant from Firebase*/
     class deleteRestaurantDetailsListener implements View.OnClickListener{
 
         @Override
@@ -528,9 +543,7 @@ public class Details extends Activity implements Constants{
         }
     }
 
-    /**
-     * Fragment Dialog to show internet connection error
-     */
+    /** Fragment Dialog to show internet connection error */
     class confirmationDeleteDialog extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -572,6 +585,7 @@ public class Details extends Activity implements Constants{
         }
     }
 
+    /** Nested class that implements a OnClickListener,serves for add images to menu or offers*/
     class addImageListener implements View.OnClickListener{
 
         private String name = null;
@@ -592,6 +606,7 @@ public class Details extends Activity implements Constants{
         }
     }
 
+    /** Nested class that implements a OnClickListener,serves for delete images from menu or offers*/
     class deleteImageListener implements View.OnClickListener{
 
         private String name = null;

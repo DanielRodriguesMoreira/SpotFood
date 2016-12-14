@@ -2,11 +2,11 @@
  * SpotFood - 2016
  *
  * Authors:
- *          -> Daniel Moreira nº21240321
- *          -> Hugo Santos nº21220702
- *          -> Tiago Santos nº21230530
- *          -> Carlos Zambrano nº 21260582
- *          -> Selman Ay nº21260599
+ *          -> Daniel Moreira   nº21240321
+ *          -> Hugo Santos      nº21220702
+ *          -> Tiago Santos     nº21230530
+ *          -> Carlos Zambrano  nº 21260582
+ *          -> Selman Ay        nº21260599
  */
 
 package spotfood.spotfood;
@@ -29,9 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class CreateAccountScreen extends Activity implements Constants{
@@ -42,12 +40,12 @@ public class CreateAccountScreen extends Activity implements Constants{
     private Button mCreateAccountButton;
     private Spinner mRestaurantsSpinner;
     private List<String> mUsernamesList;
-    private static String mUsernameLengthError = "Username must be longer than 5 characters";
-    private static String mPasswordLengthError = "Password must be longer than 5 characters";
-    private static String mUsernameAlreadyExistsError = "Username already exists on database";
-    private static String mUsernameInvalidError = "Username can't contain: % & / ^";
-    private static String mPasswordInvalidError = "Password can't contain: % & / ^";
-    private static String mRoleRM = "RM";
+    private static String sUsernameLengthError = "Username must be longer than 5 characters";
+    private static String sPasswordLengthError = "Password must be longer than 5 characters";
+    private static String sUsernameAlreadyExistsError = "Username already exists on database";
+    private static String sUsernameInvalidError = "Username can't contain: % & / ^";
+    private static String sPasswordInvalidError = "Password can't contain: % & / ^";
+    private static String sRoleRM = "RM";
     private String mUserID;
 
     @Override
@@ -63,6 +61,9 @@ public class CreateAccountScreen extends Activity implements Constants{
         getUsernamesList();
     }
 
+    /**
+     * Inicialize all the variables
+     */
     private void inicializeVariables() {
         this.mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
         this.mUsernameTextView = (TextView)findViewById(R.id.userText);
@@ -77,7 +78,8 @@ public class CreateAccountScreen extends Activity implements Constants{
                 String username = mUsernameTextView.getText().toString();
                 String password = mPasswordTextView.getText().toString();
 
-                if(!isLengthCorrect(username) || haveInvalidCharacters(username) || checkIfUsernameAlreadyExists(username)) {
+                if(!isLengthCorrect(username) || haveInvalidCharacters(username)
+                        || checkIfUsernameAlreadyExists(username)) {
                     ImageView result= (ImageView)findViewById(R.id.result_user_create_account_icon);
                     result.setImageResource(R.mipmap.error_icon);
                     result.setVisibility(ImageView.VISIBLE);
@@ -95,15 +97,15 @@ public class CreateAccountScreen extends Activity implements Constants{
                 }
 
                 if (!isLengthCorrect(username)) {
-                    Toast.makeText(getApplicationContext(), mUsernameLengthError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), sUsernameLengthError, Toast.LENGTH_LONG).show();
                 } else if (!isLengthCorrect(password)) {
-                    Toast.makeText(getApplicationContext(), mPasswordLengthError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), sPasswordLengthError, Toast.LENGTH_LONG).show();
                 } else if (haveInvalidCharacters(username)) {
-                    Toast.makeText(getApplicationContext(), mUsernameInvalidError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), sUsernameInvalidError, Toast.LENGTH_LONG).show();
                 } else if (haveInvalidCharacters(password)) {
-                    Toast.makeText(getApplicationContext(), mPasswordInvalidError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), sPasswordInvalidError, Toast.LENGTH_LONG).show();
                 } else if (checkIfUsernameAlreadyExists(username)) {
-                    Toast.makeText(getApplicationContext(), mUsernameAlreadyExistsError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), sUsernameAlreadyExistsError, Toast.LENGTH_LONG).show();
                 } else {
                     createAccount(mUsernameTextView.getText().toString(),
                             mPasswordTextView.getText().toString(),
@@ -116,7 +118,7 @@ public class CreateAccountScreen extends Activity implements Constants{
     /** Create Account on firebase database */
     private void createAccount(String username, String password, String restaurant) {
         mUserID = UUID.randomUUID().toString();
-        User user = new User(mUserID, username, password, mRoleRM);
+        User user = new User(mUserID, username, password, sRoleRM);
         mSpotFoodDataBaseReference.child("users").child(user.getIdUser()).setValue(user);
 
         if(restaurant.equals("New Restaurant")) {
@@ -142,7 +144,7 @@ public class CreateAccountScreen extends Activity implements Constants{
         }
     }
 
-    //** Check if a string contains invalid characters: % & / ^ */
+    /** Check if a string contains invalid characters: % & / ^ */
     private boolean haveInvalidCharacters(String text){
         if(text.contains("%") || text.contains("&") || text.contains("/")
                 || text.contains("^")){
@@ -259,6 +261,7 @@ public class CreateAccountScreen extends Activity implements Constants{
         });
     }
 
+    /** Fill restaurant information and call the activity to shows that information */
     private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
         if(restaurant == null ){
             return;
@@ -352,8 +355,6 @@ public class CreateAccountScreen extends Activity implements Constants{
         startActivity(intent);
         finish();
     }
-
-
 
     @Override
     public void onBackPressed() {

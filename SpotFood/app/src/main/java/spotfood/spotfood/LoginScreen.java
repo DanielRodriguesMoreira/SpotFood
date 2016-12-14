@@ -2,11 +2,11 @@
  * SpotFood - 2016
  *
  * Authors:
- *          -> Daniel Moreira nº21240321
- *          -> Hugo Santos nº21220702
- *          -> Tiago Santos nº21230530
- *          -> Carlos Zambrano nº 21260582
- *          -> Selman Ay nº21260599
+ *          -> Daniel Moreira   nº21240321
+ *          -> Hugo Santos      nº21220702
+ *          -> Tiago Santos     nº21230530
+ *          -> Carlos Zambrano  nº 21260582
+ *          -> Selman Ay        nº21260599
  */
 
 package spotfood.spotfood;
@@ -14,7 +14,6 @@ package spotfood.spotfood;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -31,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class LoginScreen extends Activity implements Constants{
 
@@ -56,6 +54,7 @@ public class LoginScreen extends Activity implements Constants{
         getLoginList();
     }
 
+    /** Inicialize all the variables */
     private void inicializeVariables() {
         this.mSpotFoodDataBaseReference = FirebaseDatabase.getInstance().getReference();
         this.mMapLogin = new HashMap<>();
@@ -97,6 +96,7 @@ public class LoginScreen extends Activity implements Constants{
         });
     }
 
+    /** Search a restaurant by User ID and call the activity that will show the information */
     private void searchRestaurantByUserIDAndCallIntent(final String mUserID) {
 
         if (mUserID == null || mUserID.isEmpty()) {
@@ -127,6 +127,7 @@ public class LoginScreen extends Activity implements Constants{
         });
     }
 
+    /** Fill restaurant information and call the activity to shows that information */
     private void fillRestaurantInformationAndCallIntent(Restaurant restaurant) {
         if (restaurant == null) {
             return;
@@ -220,6 +221,7 @@ public class LoginScreen extends Activity implements Constants{
         finish();
     }
 
+    /** Check if username and password are correct */
     private boolean usernameAndPasswordAreCorrect(String username, String password) {
         if(username == null || username.length() == 0
                 || password == null || password.length() == 0){

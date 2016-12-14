@@ -2,18 +2,18 @@
  * SpotFood - 2016
  *
  * Authors:
- *          -> Daniel Moreira nº21240321
- *          -> Hugo Santos nº21220702
- *          -> Tiago Santos nº21230530
- *          -> Carlos Zambrano nº 21260582
- *          -> Selman Ay nº21260599
+ *          -> Daniel Moreira   nº21240321
+ *          -> Hugo Santos      nº21220702
+ *          -> Tiago Santos     nº21230530
+ *          -> Carlos Zambrano  nº 21260582
+ *          -> Selman Ay        nº21260599
  */
 
 package spotfood.spotfood;
 
-import java.util.Date;
-
-
+/** This class is used to store the hours that a restaurant open/close in a specific day.
+ *  It was decided to use integers instead of date to make it easier to check if a
+ *  restaurant is open at certain hours/minutes */
 public class Hour {
     private int openHour;
     private int openMinutes;

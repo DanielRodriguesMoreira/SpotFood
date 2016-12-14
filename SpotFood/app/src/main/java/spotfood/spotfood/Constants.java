@@ -1,9 +1,19 @@
+/*
+ * SpotFood - 2016
+ *
+ * Authors:
+ *          -> Daniel Moreira   nº21240321
+ *          -> Hugo Santos      nº21220702
+ *          -> Tiago Santos     nº21230530
+ *          -> Carlos Zambrano  nº 21260582
+ *          -> Selman Ay        nº21260599
+ */
+
 package spotfood.spotfood;
 
 /**
- * Created by drmor on 08/12/2016.
+ * This Interface it's used to "store" the constants that other classes need
  */
-
 public interface Constants {
     public static final String ONLYTOSHOW = "ONLYTOSHOW";
     public static final String RESTAURANT_NAME = "RESTAURANT_NAME";
